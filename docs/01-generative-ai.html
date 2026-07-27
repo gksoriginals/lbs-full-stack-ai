@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is Generative AI?</title>
+<style>
+:root{--paper:#fff9eb;--ink:#292721;--coral:#ef7454;--sun:#ffde87;--mint:#bee9de;--lilac:#dfd0f5;--blue:#bedcf0;--line:#292721}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;color:var(--ink);background:var(--paper);font-family:"Avenir Next",Avenir,ui-rounded,sans-serif;line-height:1.4}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.46;background-image:radial-gradient(#dfd4be 1px,transparent 1.2px);background-size:19px 19px}
+.progress{height:6px;position:fixed;top:0;left:0;width:0;background:var(--coral);z-index:8;transition:width .12s linear}
+main{position:relative;width:min(1280px,calc(100% - 72px));margin:auto}.scene{min-height:92vh;padding:88px 0 72px;position:relative;border-bottom:2px solid rgba(41,39,33,.15);display:grid;align-items:center;gap:45px}.split{grid-template-columns:1.05fr .95fr}.reverse{grid-template-columns:.9fr 1.1fr}
+.kicker{font:700 1.15rem/1 "Bradley Hand","Comic Sans MS",cursive;letter-spacing:.08em;color:#7d64c2;text-transform:uppercase;margin-bottom:25px}
+h1,h2,h3,.hand{font-family:"Bradley Hand","Comic Sans MS",cursive;letter-spacing:-.04em}h1{font-size:clamp(4.8rem,9.5vw,9rem);line-height:.78;margin:0 0 38px;max-width:760px}h1 .accent,h2 .accent{color:var(--coral)}h2{font-size:clamp(3.2rem,6.8vw,6.6rem);line-height:.88;margin:0 0 28px;max-width:850px}h3{font-size:clamp(1.7rem,2.6vw,2.5rem);line-height:1;margin:0 0 9px}
+p{font-size:clamp(1.22rem,2vw,1.8rem);margin:0 0 17px;max-width:760px}.lead{font-size:clamp(1.55rem,2.75vw,2.5rem);line-height:1.28}.tiny{font-size:clamp(.98rem,1.3vw,1.18rem);line-height:1.25}.highlight{background:linear-gradient(transparent 59%,#ffdb75 0)}
+.doodles{min-height:420px;position:relative}.bubble{position:absolute;border:2.5px solid var(--line);box-shadow:5px 6px 0 rgba(41,39,33,.11);padding:24px;font:700 clamp(1.3rem,2vw,2rem)/1.05 "Bradley Hand","Comic Sans MS",cursive}.oval{border-radius:50% 45% 48% 52%}.one{top:4%;left:0;width:250px;background:#ffe7a8;transform:rotate(-5deg)}.two{top:34%;left:26%;width:230px;background:var(--lilac);transform:rotate(3deg)}.three{bottom:3%;right:0;width:290px;background:var(--mint);transform:rotate(-2deg)}.arrow{position:absolute;color:var(--coral);font:4rem/1 "Bradley Hand","Comic Sans MS",cursive}.ar1{top:22%;right:23%;transform:rotate(28deg)}.ar2{bottom:11%;left:12%;transform:rotate(-29deg)}
+.paper{border:2.5px solid var(--line);box-shadow:5px 6px 0 rgba(41,39,33,.12);padding:29px;background:#fffdf6;border-radius:9px 15px 8px 14px}.tilt-left{transform:rotate(-.8deg)}.tilt-right{transform:rotate(.7deg)}.yellow{background:#fff0bc}.green{background:#d9f1eb}.purple{background:#e8ddfa}.peach{background:#ffe1d7}
+.flow{display:flex;align-items:center;gap:13px;margin-top:34px}.flow .box{flex:1;min-height:127px;padding:18px;border:2.5px solid var(--line);background:#fffdf6;border-radius:16px 8px 14px 7px;font:700 clamp(1.25rem,2.05vw,1.9rem)/1.02 "Bradley Hand","Comic Sans MS",cursive}.flow .box:nth-child(1){background:#ffe3d9;transform:rotate(-1deg)}.flow .box:nth-child(3){background:#fff0bc;transform:rotate(.6deg)}.flow .box:nth-child(5){background:#d9f1eb;transform:rotate(-.5deg)}.flow .box:nth-child(7){background:#e8ddfa;transform:rotate(.8deg)}.flow-arrow{flex:0 0 auto;font:2.7rem/1 "Bradley Hand","Comic Sans MS",cursive;color:var(--coral)}.sub{display:block;font:400 clamp(.95rem,1.4vw,1.2rem)/1.22 "Avenir Next",sans-serif;margin-top:9px}
+.era{display:flex;align-items:center;justify-content:center}.era-inner{width:min(1120px,100%)}.era-date{font:700 clamp(1.45rem,2.5vw,2.25rem)/1 "Bradley Hand","Comic Sans MS",cursive;color:var(--plum);margin-bottom:18px}.era-inner h2{max-width:none}.era-statement{font:700 clamp(1.55rem,2.8vw,2.5rem)/1.18 "Bradley Hand","Comic Sans MS",cursive;max-width:870px;margin-bottom:30px}.era-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;max-width:none}.era-note{min-height:154px;padding:17px 20px;border:2.5px solid var(--line);box-shadow:4px 5px 0 rgba(41,39,33,.12);font-size:clamp(1.02rem,1.42vw,1.28rem);line-height:1.24;background:#fffdf6}.era-note b{display:block;margin-bottom:8px;font:700 clamp(1.2rem,1.8vw,1.62rem)/1 "Bradley Hand","Comic Sans MS",cursive}.era-note:nth-child(1){background:#ffe1d7;transform:rotate(-.7deg)}.era-note:nth-child(2){background:#fff0bc;transform:rotate(.4deg)}.era-note:nth-child(3){background:#d9f1eb;transform:rotate(-.5deg)}.era:nth-of-type(odd) .era-note:nth-child(1){background:#e8ddfa}.era:nth-of-type(odd) .era-note:nth-child(2){background:#dcebf6}.era:nth-of-type(odd) .era-note:nth-child(3){background:#ffe1d7}
+.stack{display:grid;gap:17px}.postit{padding:19px 21px;border:2.5px solid var(--line);box-shadow:4px 5px 0 rgba(41,39,33,.12);font-size:clamp(1.15rem,1.8vw,1.55rem);line-height:1.26}.postit:nth-child(1){background:#ffe1d7;transform:rotate(-1.4deg)}.postit:nth-child(2){background:#fff0bc;transform:rotate(.7deg)}.postit:nth-child(3){background:#d9f1eb;transform:rotate(-.5deg)}
+.tokens{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.token{border:2px solid var(--line);background:#fff;border-radius:50% 45% 53% 42%;padding:7px 11px;font-weight:700;font-size:1.25rem}.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:32px}.loop div{min-height:145px;padding:16px;border:2.5px solid var(--line);background:#fffdf6;border-radius:11px 17px 8px 14px}.loop div:nth-child(1){background:#ffe1d7}.loop div:nth-child(2){background:#fff0bc}.loop div:nth-child(3){background:#d9f1eb}.loop div:nth-child(4){background:#e8ddfa}.loop b{display:block;font:700 clamp(1.4rem,2.2vw,2rem)/1 "Bradley Hand","Comic Sans MS",cursive;margin-bottom:8px}.loop span{font-size:clamp(.96rem,1.4vw,1.22rem);line-height:1.18}
+.compare{display:grid;grid-template-columns:1fr 1fr;border:2.5px solid var(--line);box-shadow:5px 6px 0 rgba(41,39,33,.12)}.compare article{padding:26px}.compare article:first-child{background:#d9f1eb;border-right:2.5px solid var(--line);transform:rotate(-.2deg)}.compare article:last-child{background:#ffe1d7;transform:rotate(.2deg)}.compare p{font-size:clamp(1.1rem,1.7vw,1.48rem);margin-bottom:13px}.compare strong{font-family:"Bradley Hand","Comic Sans MS",cursive;font-size:1.35em}
+.architecture{display:flex;gap:10px;align-items:stretch;margin-top:35px}.architecture .module{flex:1;min-height:154px;padding:15px 13px;display:flex;align-items:center;justify-content:center;text-align:center;border:2.5px dashed var(--line);background:#fffdf6;font:700 clamp(1.08rem,1.6vw,1.5rem)/1.06 "Bradley Hand","Comic Sans MS",cursive}.architecture .module:nth-child(odd){background:#d9f1eb}.architecture .module:nth-child(even){background:#fff0bc}
+.wide{grid-column:1/-1}.triptych{display:grid;grid-template-columns:repeat(3,1fr);gap:21px}.risk-grid{display:grid;grid-template-columns:1fr 1.1fr 1.1fr;border:2.5px solid var(--line);box-shadow:5px 6px 0 rgba(41,39,33,.12)}.risk-grid div{padding:15px;border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);font-size:clamp(1rem,1.45vw,1.3rem);line-height:1.22;background:#fffdf6}.risk-grid div:nth-child(3n+1){font-family:"Bradley Hand","Comic Sans MS",cursive;font-size:clamp(1.23rem,1.9vw,1.65rem);font-weight:700;background:#fff0bc}.risk-grid div:nth-child(3n){border-right:0}.risk-grid div:nth-last-child(-n+3){border-bottom:0}.decision{display:flex;align-items:center;gap:18px}.decision div{flex:1;padding:22px;border:2.5px solid var(--line);background:#fffdf6;text-align:center;font:700 clamp(1.3rem,2.1vw,1.9rem)/1.1 "Bradley Hand","Comic Sans MS",cursive}.decision div:nth-child(1){background:#ffe1d7}.decision div:nth-child(3){background:#fff0bc}.decision div:nth-child(5){background:#d9f1eb}
+.next{text-align:center;min-height:62vh}.next p{margin:0 auto 28px}.next a{display:inline-block;padding:17px 25px;color:var(--ink);text-decoration:none;border:2.5px solid var(--line);box-shadow:5px 6px 0 var(--line);background:#ffdb75;border-radius:15px 7px 12px 9px;font:700 clamp(1.4rem,2.35vw,2.05rem)/1 "Bradley Hand","Comic Sans MS",cursive}.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:780px){main{width:min(100% - 36px,1280px)}.scene,.split,.reverse{grid-template-columns:1fr;min-height:auto;padding:65px 0}.doodles{min-height:340px}.flow,.architecture,.decision{flex-wrap:wrap}.flow .box{flex-basis:39%}.loop,.triptych{grid-template-columns:1fr 1fr}.architecture .module{flex-basis:28%}.compare{grid-template-columns:1fr}.compare article:first-child{border-right:0;border-bottom:2.5px solid var(--line)}.risk-grid{overflow:auto}.era{min-height:85vh}.era-notes{grid-template-columns:1fr}.era-note{min-height:auto;padding:16px}}
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<main>
+<section class="scene split">
+  <div class="reveal">
+    <div class="kicker">Full Stack & AI · Day 04 · Chapter 01</div>
+    <h1>What is<br><span class="accent">Generative</span><br>AI?</h1>
+    <p class="lead">A family of models that learns patterns and structure from data, then produces <span class="highlight">new synthetic content</span> in response to an input or condition.</p>
+    <p>Modern systems commonly use <b>foundation models</b>: broadly pre-trained neural networks that provide this generative capability.</p>
+  </div>
+  <div class="doodles reveal">
+    <div class="bubble oval one">learned<br>patterns</div><div class="arrow ar1">↘</div>
+    <div class="bubble oval two">a model<br>samples a<br>plausible<br>output</div><div class="arrow ar2">↗</div>
+    <div class="bubble oval three">text · code<br>image · audio<br>JSON</div>
+  </div>
+</section>
+
+<section class="scene reveal">
+  <div class="kicker">Broad data becomes a reusable base</div>
+  <h2>Foundation models<br>are the <span class="accent">engine</span> underneath.</h2>
+  <div class="flow">
+    <div class="box">Broad data<span class="sub">text · code · images · audio</span></div><span class="flow-arrow">→</span>
+    <div class="box">Self-supervised learning<span class="sub">the data creates its own target</span></div><span class="flow-arrow">→</span>
+    <div class="box">Foundation model<span class="sub">reusable learned patterns</span></div><span class="flow-arrow">→</span>
+    <div class="box">Application<span class="sub">a task-specific experience</span></div>
+  </div>
+  <p class="lead" style="margin-top:42px">A foundation model is trained on broad data, then adapted to many downstream tasks. It is a <b>base capability</b>, not a complete application.</p>
+</section>
+
+<section class="scene split">
+  <div class="reveal">
+    <div class="kicker">How training works at scale</div>
+    <h2>Self-supervised learning:<br>the <span class="accent">data teaches</span> the model.</h2>
+    <p class="lead">Targets are derived from the data itself, instead of requiring a human label for every example.</p>
+    <div class="tokens"><span class="token">The</span><span class="token">compiler</span><span class="token">reports</span><span class="token">an</span><span class="token">…</span></div>
+    <p><b>Target:</b> “error”. For a GPT-style model, earlier tokens are the input and the next token is the target.</p>
+  </div>
+  <div class="stack reveal">
+    <div class="postit"><h3>Text</h3>Predict the next or hidden token.</div>
+    <div class="postit"><h3>Image</h3>Reconstruct a missing region, or learn from two views of the same image.</div>
+    <div class="postit"><h3>Audio</h3>Predict a masked audio segment from the sound around it.</div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="reveal">
+    <div class="kicker">From prompt to generated output</div>
+    <h2>Learn patterns once.<br><span class="accent">Generate</span> step by step.</h2>
+    <div class="loop">
+      <div><b>1. Train</b><span>Repeated examples adjust parameters to reduce prediction error.</span></div>
+      <div><b>2. Represent</b><span>Parameters capture patterns in syntax, style, code, or visual features.</span></div>
+      <div><b>3. Infer</b><span>A new prompt enters the same processing pipeline.</span></div>
+      <div><b>4. Generate</b><span>Predict a likely next unit, append it, then repeat.</span></div>
+    </div>
+    <p class="lead" style="margin-top:35px">For language, a Transformer uses attention to relate relevant tokens in context before predicting the next token.</p>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI</div>
+    <h2>From explicit rules<br>to <span class="accent">models that create.</span></h2>
+    <p class="lead">Generative AI did not appear overnight. It is the latest change in where intelligence is encoded: rules → data → learned representations → broadly pre-trained models.</p>
+    <p class="era-statement">Each era solved a real problem, then exposed a limitation that drove the next technical shift.</p>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI · 01 / 06 · 1950s–1970s</div>
+    <h2><span class="accent">Symbolic AI</span>:<br>intelligence as explicit rules.</h2>
+    <p class="era-statement">The premise: describe reasoning with symbols, logic, search, and hand-written knowledge.</p>
+    <div class="era-notes"><div class="era-note"><b>Representative systems</b>Logic Theorist (1956) and General Problem Solver (1957).</div><div class="era-note"><b>What it made possible</b>Transparent reasoning over explicitly represented facts and rules.</div><div class="era-note"><b>Why the field moved on</b>It became brittle when knowledge was incomplete, ambiguous, or expensive to encode.</div></div>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI · 02 / 06 · 1980s</div>
+    <h2><span class="accent">Expert systems</span>:<br>capture a domain expert.</h2>
+    <p class="era-statement">The system paired an if–then rule base with domain knowledge to make narrow decisions.</p>
+    <div class="era-notes"><div class="era-note"><b>Representative systems</b>MYCIN for medical diagnosis and XCON/R1 for computer configuration.</div><div class="era-note"><b>What it made possible</b>Practical decision support in constrained, high-value domains.</div><div class="era-note"><b>Why the field moved on</b>Knowledge acquisition and maintenance did not scale as conditions changed.</div></div>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI · 03 / 06 · 1990s–2000s</div>
+    <h2><span class="accent">Statistical ML</span>:<br>learn from labelled data.</h2>
+    <p class="era-statement">Instead of writing every rule, engineers trained a model to map features to a target.</p>
+    <div class="era-notes"><div class="era-note"><b>Representative models</b>Hidden Markov Models, decision trees, logistic regression, and SVMs.</div><div class="era-note"><b>What it made possible</b>Data-driven classification, ranking, and prediction.</div><div class="era-note"><b>Why the field moved on</b>Each task still needed labelled data, engineered features, and a separate model.</div></div>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI · 04 / 06 · 2010s</div>
+    <h2><span class="accent">Deep learning</span>:<br>learn the representations too.</h2>
+    <p class="era-statement">Multi-layer neural networks began learning useful features directly from large datasets.</p>
+    <div class="era-notes"><div class="era-note"><b>Representative models</b>AlexNet for vision; LSTM encoder–decoder models for sequence-to-sequence learning.</div><div class="era-note"><b>What it made possible</b>Major gains in image, speech, and language tasks without manual feature design.</div><div class="era-note"><b>Why the field moved on</b>Training demanded large data and compute; recurrent sequence processing remained serial.</div></div>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI · 05 / 06 · 2017–2020</div>
+    <h2><span class="accent">Transformers</span>:<br>attention and pre-training at scale.</h2>
+    <p class="era-statement">The Transformer removed recurrence, used attention, and made training much more parallelizable.</p>
+    <div class="era-notes"><div class="era-note"><b>Representative models</b>Transformer (2017), BERT (2018), and GPT-3 (2020).</div><div class="era-note"><b>What it made possible</b>Broad self-supervised pre-training created reusable language capabilities and few-shot prompting.</div><div class="era-note"><b>What remained difficult</b>Training cost, factual reliability, and aligning outputs with a user’s intent.</div></div>
+  </div>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="era-date">Evolution of AI · 06 / 06 · 2021–now</div>
+    <h2><span class="accent">Generative foundation models</span>:<br>create across tasks and modalities.</h2>
+    <p class="era-statement">Broad-data models are instruction-tuned and increasingly work across language, images, audio, and code.</p>
+    <div class="era-notes"><div class="era-note"><b>Representative models</b>FLAN, InstructGPT, CLIP, and modern multimodal foundation models.</div><div class="era-note"><b>What it made possible</b>One broadly trained base can support many generative tasks through adaptation and prompting.</div><div class="era-note"><b>Open issues</b>Hallucination, bias, safety, privacy, grounding, and accountable use remain system-level concerns.</div></div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="kicker reveal">Two different kinds of learning</div>
+  <h2 class="reveal"><span class="accent">Generate</span> a new output<br>or <span class="accent">decide</span> about an existing input?</h2>
+  <div class="compare reveal">
+    <article><h3>Generative AI</h3><p><strong>Learns:</strong> structure and patterns in data.</p><p><strong>Produces:</strong> new text, code, image, audio, or synthetic record.</p><p><strong>Examples:</strong> GPT/Llama, diffusion models, VAEs, T5/BART.</p></article>
+    <article><h3>Discriminative AI</h3><p><strong>Learns:</strong> relationship between an input and its label or value.</p><p><strong>Produces:</strong> a class, score, ranking, or prediction.</p><p><strong>Examples:</strong> CNN classifier, SVM, logistic regression, BERT classifier.</p></article>
+  </div>
+  <p class="lead reveal" style="margin-top:31px">CNN, RNN/LSTM, and Transformer are architectures. The <b>objective</b>—not the architecture alone—makes a model generative or discriminative.</p>
+</section>
+
+<section class="scene era reveal">
+  <div class="era-inner">
+    <div class="kicker">Choose bounded, measurable work</div>
+    <h2>What tasks are<br><span class="accent">suitable?</span></h2>
+    <p class="era-statement">A strong use case has a clear input, a useful output contract, and a way to judge quality.</p>
+    <div class="era-notes"><div class="era-note"><b>Generation</b>Specification → draft text, code, or design. Check with a rubric or human acceptance.</div><div class="era-note"><b>Transformation / extraction</b>Source document → summary, rewrite, translation, or typed fields. Check fidelity, schema, and evidence.</div><div class="era-note"><b>Grounded Q&amp;A</b>Question + approved documents → cited answer. Check retrieval and faithfulness to sources.</div></div>
+  </div>
+</section>
+
+<section class="scene split">
+  <div class="reveal">
+    <div class="kicker">The value filter</div>
+    <h2>Where does GenAI<br>add <span class="accent">value</span>?</h2>
+    <p class="lead">Use it when several outputs can be acceptable and creating or transforming content is the bottleneck.</p>
+    <div class="stack"><div class="postit"><b>Generate:</b> drafts, code, tests, or design alternatives.</div><div class="postit"><b>Transform:</b> summaries, translations, reformatted documents.</div><div class="postit"><b>Compose:</b> a response from retrieved, approved evidence.</div></div>
+  </div>
+  <div class="paper yellow tilt-right reveal">
+    <h3>Use deterministic software instead</h3>
+    <p>For exact calculations, fixed policy enforcement, stable rules, and authoritative lookups.</p>
+  </div>
+</section>
+
+<section class="scene split">
+  <div class="reveal">
+    <div class="kicker">Beyond text</div>
+    <h2><span class="accent">Multimodal</span> Generative AI<br>connects modalities.</h2>
+    <p class="lead">A multimodal model can accept, relate, or generate across text, images, audio, video, and structured data.</p>
+    <div class="flow"><div class="box">Text<br>Image<br>Audio<br>Video</div><span class="flow-arrow">→</span><div class="box">Multimodal<br>foundation model</div><span class="flow-arrow">→</span><div class="box">Text · code<br>Image · audio<br>Structured data</div></div>
+  </div>
+  <div class="stack reveal">
+    <div class="postit"><b>Inspection</b>Image + text → structured inspection report.</div>
+    <div class="postit"><b>Meetings</b>Audio → transcript → extracted actions.</div>
+    <div class="postit"><b>Control boundary</b>Every modality needs permission, validation, and audit controls.</div>
+  </div>
+</section>
+
+<section class="scene split">
+  <div class="reveal">
+    <div class="kicker">Probabilistic input needs explicit controls</div>
+    <h2>GenAI changes the<br><span class="accent">application architecture.</span></h2>
+    <div class="flow"><div class="box">Natural-language / multimodal input</div><span class="flow-arrow">→</span><div class="box">Probabilistic interpretation</div><span class="flow-arrow">→</span><div class="box">Retrieval · rules · tools · validation</div><span class="flow-arrow">→</span><div class="box">Audited result</div></div>
+    <p class="lead" style="margin-top:35px">It does not remove domain data models, permissions, business rules, testing, monitoring, or accountability.</p>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="kicker reveal">Trust requires control boundaries</div>
+  <h2 class="reveal">Fluent output is not<br><span class="accent">evidence of correctness.</span></h2>
+  <div class="risk-grid reveal"><div>Risk</div><div>Why it happens</div><div>Control</div><div>Hallucination</div><div>Plausible generation is not external truth.</div><div>Retrieval, citations, verification</div><div>Prompt injection</div><div>Untrusted text tries to alter instructions.</div><div>Separate data from instructions; allowlists</div><div>Data leakage</div><div>Sensitive information enters uncontrolled paths.</div><div>Classification, minimisation, access control</div><div>Unsafe action</div><div>Model proposes an action outside authority.</div><div>Server-side validation, approval gates</div><div>Quality drift</div><div>Model, prompt, or index changes.</div><div>Versioning and regression evaluation</div></div>
+</section>
+
+<section class="scene">
+  <div class="kicker reveal">Who retains authority?</div>
+  <h2 class="reveal">Human-in-the-loop is an<br><span class="accent">architecture decision.</span></h2>
+  <div class="decision reveal"><div>Candidate<br>output</div><span class="flow-arrow">→</span><div>Consequence<br>level</div><span class="flow-arrow">→</span><div>Low: validate + respond<br><br>Medium: review queue<br><br>High: domain authority decides</div></div>
+  <p class="lead reveal" style="margin-top:38px">Define who reviews, what evidence they see, what they may override, and what gets logged for audit.</p>
+</section>
+
+<section class="scene next reveal">
+  <div class="kicker">Continue the narrative</div>
+  <h2>Next: Large<br><span class="accent">Language Models</span></h2>
+  <p>We now zoom into the most widely used generative foundation models: how they represent, attend to, and generate language.</p>
+  <a href="./02-large-language-models.html">Open Chapter 02 →</a>
+</section>
+</main>
+<script>
+const bar=document.querySelector('.progress');function update(){const max=document.documentElement.scrollHeight-innerHeight;bar.style.width=(max?scrollY/max*100:0)+'%'}addEventListener('scroll',update,{passive:true});update();
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LLM Integration</title>
+  <style>
+    :root{--ink:#292721;--paper:#fffaf0;--coral:#ef7355;--sun:#ffdc77;--mint:#c8ece2;--lilac:#e4d8f7;--pink:#ffe1d8;--purple:#7d64c2}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background-color:var(--paper);background-image:radial-gradient(rgba(92,74,46,.17) 1.1px,transparent 1.1px);background-size:23px 23px;font-family:"Avenir Next",Avenir,sans-serif}.progress{height:7px;background:var(--coral);position:fixed;left:0;top:0;width:0;z-index:10}main{width:min(1260px,calc(100% - 72px));margin:auto}.scene{min-height:92vh;padding:82px 0 65px;display:grid;align-items:center;gap:34px;border-bottom:2px solid rgba(41,39,33,.15)}.split{grid-template-columns:1.05fr .95fr}.one{grid-template-columns:1fr}.kicker{font:700 1.08rem/1 "Bradley Hand","Comic Sans MS",cursive;letter-spacing:.08em;color:var(--purple);text-transform:uppercase;margin-bottom:23px}h1,h2,h3{font-family:"Bradley Hand","Comic Sans MS",cursive;letter-spacing:-.04em}h1{font-size:clamp(4.5rem,9.1vw,8.6rem);line-height:.79;margin:0 0 32px}h2{font-size:clamp(3rem,6.1vw,5.9rem);line-height:.89;margin:0 0 26px;max-width:1010px}h3{font-size:clamp(1.4rem,2.1vw,2rem);line-height:1.02;margin:0 0 8px}p{font-size:clamp(1.14rem,1.76vw,1.61rem);line-height:1.28;margin:0 0 15px;max-width:860px}.lead{font-size:clamp(1.48rem,2.65vw,2.35rem);line-height:1.25}.accent{color:var(--coral)}.paper{border:2.5px solid var(--ink);padding:22px;background:#fffdf6;box-shadow:5px 6px 0 rgba(41,39,33,.12)}.doodle{position:relative;min-height:405px}.bubble{position:absolute;border:2.5px solid var(--ink);box-shadow:5px 6px 0 rgba(41,39,33,.11);padding:22px;font:700 clamp(1.25rem,2vw,1.85rem)/1.05 "Bradley Hand","Comic Sans MS",cursive}.oval{border-radius:50% 45% 48% 52%}.b1{top:4%;left:0;width:230px;background:#ffe7a8;transform:rotate(-5deg)}.b2{top:38%;left:31%;width:230px;background:var(--lilac);transform:rotate(3deg)}.b3{bottom:2%;right:1%;width:270px;background:var(--mint);transform:rotate(-2deg)}.arrow{position:absolute;color:var(--coral);font:4rem/1 "Bradley Hand","Comic Sans MS",cursive}.a1{top:23%;right:27%;transform:rotate(28deg)}.a2{bottom:14%;left:14%;transform:rotate(-29deg)}.quote{margin-top:20px;padding:19px 22px;border-left:7px solid var(--coral);background:#fff0bc;font:700 clamp(1.4rem,2.25vw,2rem)/1.16 "Bradley Hand","Comic Sans MS",cursive}.diagram{padding:17px;border:2.5px solid var(--ink);background:#1f1e1b;box-shadow:5px 6px 0 rgba(41,39,33,.12);overflow:auto}.mermaid{min-width:720px!important;background:#1f1e1b!important}.codegrid{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:24px}.codebox{position:relative;padding:17px;border:2.5px solid var(--ink);background:#fffdf6}.codebox:nth-child(1){background:var(--pink)}.codebox:nth-child(2){background:var(--lilac)}.codebox:nth-child(3){background:#fff0bc}.codebox:nth-child(4){background:var(--mint)}.codebox h3{font-size:clamp(1.35rem,2vw,1.8rem)}pre.code{margin:10px 0 0;overflow:auto;padding:12px;border:1.5px solid var(--ink);background:rgba(255,255,255,.78);font:600 clamp(.78rem,1.02vw,.94rem)/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}.copy-code{position:absolute;right:13px;top:13px;padding:7px 10px;border:1.5px solid var(--ink);background:#fffdf6;color:var(--ink);cursor:pointer;font:700 .9rem/1 "Bradley Hand","Comic Sans MS",cursive}.copy-code:focus-visible{outline:3px solid var(--coral);outline-offset:2px}.table{margin-top:29px;border:2.5px solid var(--ink);background:#fffdf6}.row{display:grid;grid-template-columns:1.05fr 1.25fr 1.1fr}.row>*{padding:13px 14px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);font-size:clamp(.94rem,1.28vw,1.17rem);line-height:1.15}.row>*:last-child{border-right:0}.row:last-child>*{border-bottom:0}.row.head>*{background:#fff0bc;font:700 clamp(1.18rem,1.65vw,1.45rem)/1 "Bradley Hand","Comic Sans MS",cursive}.pipeline{display:grid;grid-template-columns:1fr 55px 1fr 55px 1fr 55px 1fr;gap:9px;align-items:center;margin-top:27px}.node{padding:18px;border:2.5px solid var(--ink);min-height:164px;font:700 clamp(1.14rem,1.65vw,1.5rem)/1.06 "Bradley Hand","Comic Sans MS",cursive}.node small{display:block;margin-top:8px;font:400 clamp(.82rem,1.04vw,.96rem)/1.14 "Avenir Next",Avenir,sans-serif}.node:nth-child(1){background:var(--pink)}.node:nth-child(3){background:#fff0bc}.node:nth-child(5){background:var(--mint)}.node:nth-child(7){background:var(--lilac)}.flow{color:var(--coral);text-align:center;font:3rem/1 "Bradley Hand","Comic Sans MS",cursive}.callout{margin-top:25px;padding:18px;border:2.5px solid var(--ink);background:var(--mint);font-size:clamp(1.12rem,1.7vw,1.45rem);line-height:1.25}.callout b{font-family:"Bradley Hand","Comic Sans MS",cursive;font-size:1.25em}.next{text-align:center;min-height:60vh}.next p{margin:0 auto 27px}.next a{display:inline-block;margin:8px;padding:17px 24px;border:2.5px solid var(--ink);box-shadow:5px 6px 0 var(--ink);background:#ffdb75;color:var(--ink);text-decoration:none;font:700 clamp(1.25rem,2.1vw,1.8rem)/1 "Bradley Hand","Comic Sans MS",cursive}.reveal{opacity:0;transform:translateY(22px);transition:opacity .58s ease,transform .58s ease}.reveal.visible{opacity:1;transform:none}@media(max-width:800px){main{width:min(100% - 34px,1260px)}.scene,.split{grid-template-columns:1fr;min-height:auto;padding:63px 0}.doodle{min-height:340px}.codegrid{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr}.flow{min-height:38px;transform:rotate(90deg)}.row{grid-template-columns:1fr}.row>*{border-right:0}.mermaid{min-width:610px!important}}
+  </style>
+</head>
+<body>
+  <div class="progress"></div>
+  <main>
+    <section class="scene split">
+      <div class="reveal"><div class="kicker">Full Stack &amp; AI · Day 04 · Chapter 05</div><h1>LLM<br><span class="accent">Integration</span></h1><p class="lead">A model call becomes an application only when its output is bounded by data, contracts, permissions, and feedback.</p><p>We will build one course-policy assistant using a local open-weight model.</p></div>
+      <div class="doodle reveal"><div class="bubble oval b1">approved<br>evidence</div><div class="arrow a1">↘</div><div class="bubble oval b2">bounded<br>model call</div><div class="arrow a2">↗</div><div class="bubble oval b3">validated<br>application<br>result</div></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">One component, not the whole system</div><h2>The application owns<br>the <span class="accent">authority.</span></h2><p class="lead">The model interprets and generates. Your backend owns identity, data access, validation, side effects, and the user experience.</p></div>
+      <div class="diagram reveal"><pre class="mermaid">flowchart LR
+  U[User request] --> A[Application backend]
+  A --> C[Build bounded context]
+  C --> M[Open-weight LLM via Ollama]
+  M --> V[Validate and parse]
+  V --> P[Policy and permission checks]
+  P --> R[Response or approved action]
+  S[(Approved records)] --> C</pre></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Start with a vertical slice</div><h2>One question. One trusted source.<br>One measurable <span class="accent">contract.</span></h2><p class="lead">“Can a student with 72% attendance sit for the examination?” → <span class="accent">eligible | ineligible | insufficient evidence</span>, with cited sections.</p></div>
+      <div class="diagram reveal"><pre class="mermaid">sequenceDiagram
+  participant F as Faculty member
+  participant B as Backend
+  participant D as Policy store
+  participant L as Local LLM
+  F->>B: Ask eligibility question
+  B->>D: Retrieve approved rule
+  D-->>B: Excerpt plus source ID
+  B->>L: Question + evidence + JSON contract
+  L-->>B: Structured recommendation
+  B->>B: Validate schema and citations
+  B-->>F: Evidence-backed answer or abstention</pre></div>
+      <div class="quote reveal">“Insufficient evidence” is a valid application result—not a model failure.</div>
+    </section>
+
+    <section class="scene split">
+      <div class="reveal"><div class="kicker">Open-model deployment</div><h2>One adapter.<br><span class="accent">Two endpoints.</span></h2><p class="lead">Ollama makes the workshop reproducible on a laptop. vLLM is the later shared-server path.</p><p>The application calls its adapter—not a provider-specific response object.</p></div>
+      <div class="diagram reveal"><pre class="mermaid">flowchart TD
+  APP[Python application] --> AD[LLM adapter]
+  AD -->|laptop| O[Ollama local API]
+  AD -->|shared GPU| V[vLLM API]
+  O --> W[Selected open-weight model]
+  V --> W</pre></div>
+      <div class="codegrid reveal"><div class="codebox"><h3>Same client shape</h3><pre class="code">from openai import OpenAI
+
+def open_model_client(base_url: str) -> OpenAI:
+    return OpenAI(
+        base_url=base_url,
+        api_key="local-or-server-key",
+    )
+
+# Ollama: http://localhost:11434/v1
+# vLLM:   http://llm-server:8000/v1</pre></div><div class="codebox"><h3>What changes?</h3><p><b>Endpoint, model ID, runtime.</b></p><p>Re-run the same evaluation set before accepting a new model, quantisation, or serving engine.</p></div></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Prompting becomes code</div><h2>Every earlier chapter<br>meets the <span class="accent">request pipeline.</span></h2></div>
+      <div class="pipeline reveal"><div class="node">Token + context budget<small>instructions, question, evidence, tool result, answer all share one window</small></div><div class="flow">→</div><div class="node">Versioned prompt assembly<small>trusted excerpts are delimited; source IDs survive retrieval</small></div><div class="flow">→</div><div class="node">Model + parameters<small>exact model, low/high variation, output budget, tool policy</small></div><div class="flow">→</div><div class="node">Validate + evaluate<small>schema, citations, latency, cost, human correction</small></div></div>
+      <div class="callout reveal"><b>Temperature changes sampling—not truthfulness.</b> Retrieval chooses what enters the context window; prompt structure tells the model how to treat it; validation decides whether the application can use the result.</div>
+    </section>
+
+    <section class="scene split">
+      <div class="reveal"><div class="kicker">Structured output</div><h2>Ask for a typed<br><span class="accent">domain result.</span></h2><p class="lead">A schema constrains shape. The application still validates citation scope and business meaning.</p></div>
+      <div class="diagram reveal"><pre class="mermaid">flowchart LR
+  Q[Question] --> X[Authorised excerpts]
+  X --> G[Generate JSON]
+  G --> J{Schema valid?}
+  J -- no --> F[Safe failure]
+  J -- yes --> C{Citations authorised?}
+  C -- no --> A[Abstain / review]
+  C -- yes --> O[Domain result]</pre></div>
+      <div class="codegrid reveal"><div class="codebox"><h3>Contract</h3><pre class="code">class PolicyAnswer(BaseModel):
+    decision: Literal[
+        "eligible", "ineligible",
+        "insufficient_evidence"
+    ]
+    rationale: str
+    citations: list[str]
+    requires_human_review: bool</pre></div><div class="codebox"><h3>Validate after generation</h3><pre class="code">answer = PolicyAnswer.model_validate_json(text)
+permitted = {excerpt.source_id for excerpt in excerpts}
+
+if not set(answer.citations) &lt;= permitted:
+    raise ValueError("Unsupported citation")</pre></div></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Retrieval augmented generation</div><h2>Current, scoped evidence<br>before <span class="accent">generation.</span></h2><p class="lead">RAG is retrieval + generation—not merely “use a vector database.”</p></div>
+      <div class="diagram reveal"><pre class="mermaid">flowchart LR
+  D[Approved documents] --> I[Parse, chunk, attach metadata]
+  I --> E[Embed and index]
+  Q[User question] --> F[Authorise and filter]
+  F --> R[Keyword, vector, or hybrid retrieval]
+  E --> R
+  R --> K[Top evidence + source IDs]
+  K --> L[LLM: answer from evidence]
+  L --> V[Validate citations / abstain]</pre></div>
+      <div class="quote reveal">Authorise before retrieval. A relevant document that the user may not access must never enter the prompt.</div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Tool calling</div><h2>The model can request.<br>Only code can <span class="accent">act.</span></h2><p class="lead">Tool arguments are untrusted input. The application validates, authorises, executes, and returns a typed result.</p></div>
+      <div class="diagram reveal"><pre class="mermaid">sequenceDiagram
+  participant L as LLM
+  participant A as Application
+  participant T as Approved tool
+  L-->>A: tool_call(name, JSON arguments)
+  A->>A: schema + permission + policy check
+  alt allowed
+    A->>T: Execute with server credentials
+    T-->>A: trusted result
+    A-->>L: tool_result
+    L-->>A: user-facing response
+  else denied or invalid
+    A-->>L: structured error or no result
+  end</pre></div>
+      <div class="codegrid reveal"><div class="codebox"><h3>A narrow tool contract</h3><pre class="code">{
+  "name": "lookup_attendance_rule",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "programme": {"type": "string"},
+      "semester": {"type": "integer"}
+    },
+    "required": ["programme", "semester"],
+    "additionalProperties": false
+  }
+}</pre></div><div class="codebox"><h3>Never hand over authority</h3><p>Use narrow tools, server-side credentials, permission checks, timeouts, audit logs, and confirmation for consequential actions.</p></div></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Choose the narrowest useful pattern</div><h2>Not every workflow needs<br>an <span class="accent">agent.</span></h2></div>
+      <div class="table reveal"><div class="row head"><div>Pattern</div><div>Model role</div><div>Deterministic boundary</div></div><div class="row"><div>Extract → validate</div><div>unstructured input → typed fields</div><div>schema + business rules</div></div><div class="row"><div>Retrieve → answer</div><div>synthesise authorised evidence</div><div>retrieval + citations + abstention</div></div><div class="row"><div>Draft → review → publish</div><div>produce a candidate artefact</div><div>human approval</div></div><div class="row"><div>Tool loop</div><div>select narrow allowed operations</div><div>allowlist + permission + confirmation</div></div></div>
+    </section>
+
+    <section class="scene split">
+      <div class="reveal"><div class="kicker">Reliability and safety</div><h2>Design for normal<br><span class="accent">failure.</span></h2><p class="lead">Retries are for temporary transport failures—not for a wrong answer.</p></div>
+      <div class="table reveal"><div class="row head"><div>Failure / threat</div><div>System response</div><div>Never do this</div></div><div class="row"><div>timeout / 429</div><div>bounded retry, backoff, queue</div><div>unbounded retry storm</div></div><div class="row"><div>weak evidence</div><div>abstain or ask to clarify</div><div>invent a confident answer</div></div><div class="row"><div>prompt injection</div><div>treat retrieved text as data; narrow tools</div><div>let external text redefine authority</div></div><div class="row"><div>model outage</div><div>declared fallback or human flow</div><div>silently degrade a high-risk task</div></div></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Observe, evaluate, improve</div><h2>Logs explain a request.<br>Evaluation explains <span class="accent">change.</span></h2></div>
+      <div class="diagram reveal"><pre class="mermaid">flowchart LR
+  P[Production traces] --> S[Protect sensitive data]
+  S --> F[Sample failures and edge cases]
+  F --> E[Versioned evaluation set]
+  E --> C[Compare model, prompt, retrieval]
+  C --> D[Deploy or reject]
+  D --> P</pre></div>
+      <div class="callout reveal"><b>Trace the configuration, not only the final answer.</b> Capture model ID, prompt version, retrieval IDs, parameters, tools, schema result, latency, cost, retries, and user feedback.</div>
+    </section>
+
+    <section class="scene split">
+      <div class="reveal"><div class="kicker">Runnable local prototype</div><h2>Two small files.<br>One complete <span class="accent">boundary.</span></h2><p class="lead">The Python file serves the UI, calls Ollama, validates the JSON contract, and verifies citations. The HTML is the visible user workflow.</p><p>Set a locally pulled model tag, then run the Python file and open <code>http://127.0.0.1:8080</code>.</p></div>
+      <div class="codegrid reveal"><div class="codebox"><h3>Run it</h3><pre class="code">ollama pull &lt;MODEL_TAG&gt;
+
+OLLAMA_MODEL=&lt;MODEL_TAG&gt; \
+python3 policy_assistant_demo.py</pre></div><div class="codebox"><h3>What to inspect</h3><p>Prompt assembly<br>low temperature<br>authorised excerpts<br>JSON validation<br>citation check<br>safe failure path</p></div></div>
+      <div class="quote reveal">A safe useful application is usually a bounded workflow with a clear human escape hatch.</div>
+    </section>
+
+    <section class="scene next reveal"><div class="kicker">End of Day 04</div><h2>Build the boundary.<br><span class="accent">Then trust the workflow.</span></h2><p>Generative models create possibilities. Reliable applications decide which possibilities are permitted, evidenced, and useful.</p><a href="./demo/">Open local demo guide →</a><a href="./01-generative-ai.html">Return to Chapter 01 →</a></section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{background:'#1f1e1b',primaryColor:'#393734',primaryTextColor:'#f7f0df',primaryBorderColor:'#bdb5a5',lineColor:'#cfc6b5',secondaryColor:'#292721',tertiaryColor:'#292721',actorBkg:'#393734',actorBorder:'#bdb5a5',actorTextColor:'#f7f0df',signalColor:'#f7f0df',signalTextColor:'#f7f0df',labelBoxBkgColor:'#292721',labelTextColor:'#f7f0df',noteBkgColor:'#393734',noteTextColor:'#f7f0df',noteBorderColor:'#bdb5a5',fontFamily:'Avenir Next, sans-serif'}});
+    document.querySelectorAll('pre.code').forEach(pre=>{const button=document.createElement('button');button.className='copy-code';button.type='button';button.textContent='Copy';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText);button.textContent='Copied';setTimeout(()=>button.textContent='Copy',1300)}catch{button.textContent='Select code';setTimeout(()=>button.textContent='Copy',1300)}});pre.before(button)});
+    const progress=document.querySelector('.progress');const update=()=>{const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=(max?scrollY/max*100:0)+'%'};addEventListener('scroll',update,{passive:true});update();const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.1});document.querySelectorAll('.reveal').forEach(item=>observer.observe(item));
+  </script>
+</body>
+</html>
