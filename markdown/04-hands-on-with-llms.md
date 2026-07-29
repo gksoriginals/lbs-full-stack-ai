@@ -146,13 +146,25 @@ Blind scoring is useful: let reviewers score anonymous outputs before revealing 
 
 ### On slide
 
-| Axis | Example measure |
-| --- | --- |
-| **Task quality** | accuracy, source fidelity, rubric score, code tests |
-| **Reliability** | valid-schema rate, variance across runs, abstention behaviour |
-| **Operational fit** | p50/p95 latency, cost per accepted result, throughput |
-| **Safety and governance** | data boundary, prompt-injection resilience, policy violations, auditability |
-| **User experience** | language quality, accessibility, multilingual performance, review burden |
+### Task quality
+
+Does the output meet the task’s own standard? Measure accuracy, source fidelity, rubric score, or executable tests. Fluent language is not evidence of correctness.
+
+### Reliability
+
+Does the workflow behave predictably across ordinary and edge cases? Check valid-schema rate, variance across runs, and whether it abstains or routes uncertainty correctly.
+
+### Operational fit
+
+Can the system sustain real use? Measure p50/p95 latency, cost per accepted result, and throughput against the application’s budget—not an ideal demo.
+
+### Safety and governance
+
+Does it stay within the data boundary and resist untrusted instructions? Test injection resilience, auditability, policy compliance, and application controls around consequential actions.
+
+### User experience
+
+Can intended users understand and use the result? Evaluate language quality, multilingual performance, accessibility, and the human-review burden the system creates.
 
 > A leaderboard score is evidence about a benchmark—not proof of suitability for your workflow.
 
@@ -426,14 +438,21 @@ The next chapter, LLM Integration, turns the selected model into an application 
 
 ### On slide
 
-| Control family | Common parameters | What they change |
-| --- | --- | --- |
-| **Sampling** | `temperature`, `top_p`, `top_k`, `seed` | diversity and repeatability of token selection |
-| **Output budget** | `max_tokens`, `max_output_tokens`, `stop` | maximum length and completion boundary |
-| **Reasoning** | `effort`, `thinking`, `thinkingLevel`, reasoning-token budget | amount or depth of inference-time reasoning where supported |
-| **Output contract** | JSON schema, response MIME type, structured-output mode | syntactic shape of the response |
-| **Tools** | tool choice, allowed tools, parallel tool calls | whether and how the model can call external capabilities |
-| **Runtime** | stream, timeout, retries, context limit, batch size | responsiveness, resilience, and throughput |
+### Sampling controls
+
+- **Temperature** rescales candidate scores before sampling. Lower values concentrate probability on the leading candidates; higher values spread probability across more plausible continuations.
+- **Top-p (nucleus sampling)** keeps the smallest candidate set whose cumulative probability reaches `p`. It removes the low-probability tail while allowing the candidate-set size to vary at every generation step.
+- **Top-k** keeps the `k` highest-probability candidates. It is a fixed-size cap, unlike top-p’s probability-mass threshold.
+- **Seed** initialises the sampler where supported. It helps controlled experiments but is not a model-version or platform-stability guarantee.
+
+### Request controls
+
+- **`max_tokens` / `max_output_tokens`** set a ceiling on generated length and cost. Too small can truncate an otherwise correct response.
+- **`stop`** ends generation on a chosen marker. It can delimit a completion, but does not validate that the answer is complete or well formed.
+- **Reasoning effort / thinking budget** allocates more inference-time work on models that expose it. Use it for difficult tasks only after measuring accuracy, latency, and token cost.
+- **Structured-output mode and JSON schema** specify the response shape; application code must still validate the returned value.
+- **Tool choice and allowed tools** define the actions the model may request; application code must authorise and execute any action.
+- **Runtime controls** such as streaming, timeout, retries, context limit, and batch size shape responsiveness, resilience, and throughput.
 
 ```python
 # Illustrative configuration: exact fields vary by provider and model
@@ -463,8 +482,6 @@ Do not blindly set every parameter. Some current reasoning-oriented models restr
 | creative ideation | controlled diversity; generate several candidates | rubric-based selection, not the first answer |
 | hard reasoning | model-supported effort/thinking; adequate output budget | task accuracy, latency, and total token cost |
 | tool workflow | explicit allowed tools and validation | tool arguments, permissions, and side effects |
-
-> A lower temperature does not make a response factual. A seed does not guarantee reproducibility across model or platform changes.
 
 ### Speaker notes
 

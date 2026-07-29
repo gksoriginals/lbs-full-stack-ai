@@ -433,6 +433,66 @@
           "Comic Sans MS",
           cursive;
       }
+      .parameter-groups {
+        display: grid;
+        gap: 24px;
+        margin-top: 29px;
+      }
+      .parameter-group {
+        border: 2.5px solid var(--ink);
+        padding: 18px;
+        background: #fffdf6;
+      }
+      .parameter-group.sampling { background: #fff0bc; }
+      .parameter-group.request { background: var(--mint); }
+      .parameter-group h3 {
+        margin: 0 0 5px;
+        font-size: clamp(1.6rem, 2.5vw, 2.3rem);
+      }
+      .parameter-group > p { margin: 0 0 15px; max-width: 900px; }
+      .parameter-notes {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 11px;
+      }
+      .parameter-note {
+        padding: 13px 14px;
+        border: 2px solid var(--ink);
+        background: rgba(255, 255, 255, 0.7);
+        font-size: clamp(0.98rem, 1.32vw, 1.18rem);
+        line-height: 1.18;
+      }
+      .parameter-note b {
+        display: block;
+        margin-bottom: 5px;
+        font:
+          700 clamp(1.35rem, 1.9vw, 1.7rem)/1 "Bradley Hand",
+          "Comic Sans MS",
+          cursive;
+      }
+      .evaluation-groups {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 29px;
+      }
+      .evaluation-note {
+        padding: 17px;
+        border: 2.5px solid var(--ink);
+        font-size: clamp(1rem, 1.32vw, 1.18rem);
+        line-height: 1.18;
+      }
+      .evaluation-note:nth-child(1) { background: #ffe1d8; }
+      .evaluation-note:nth-child(2) { background: #e4d8f7; }
+      .evaluation-note:nth-child(3) { background: #fff0bc; }
+      .evaluation-note:nth-child(4) { background: #c8ece2; }
+      .evaluation-note:nth-child(5) { background: #fffdf6; grid-column: 1 / -1; }
+      .evaluation-note h3 {
+        margin: 0 0 6px;
+        font-size: clamp(1.5rem, 2.15vw, 1.9rem);
+      }
+      .evaluation-note p { margin: 0; }
+      .evaluation-note strong { font-family: "Bradley Hand", "Comic Sans MS", cursive; }
       .next {
         text-align: center;
         min-height: 60vh;
@@ -499,6 +559,9 @@
         .row > * {
           border-right: 0;
         }
+        .parameter-notes { grid-template-columns: 1fr; }
+        .evaluation-groups { grid-template-columns: 1fr; }
+        .evaluation-note:nth-child(5) { grid-column: auto; }
       }
     </style>
     <style>
@@ -916,31 +979,25 @@ http://localhost:8000/v1</pre>
             determine what the system can do.
           </p>
         </div>
-        <div class="table reveal">
-          <div class="row head">
-            <div>Control group</div>
-            <div>Typical parameters</div>
-            <div>What it changes</div>
+        <div class="parameter-groups reveal">
+          <div class="parameter-group sampling">
+            <h3>Sampling: which plausible token is chosen?</h3>
+            <p>These settings alter the candidate distribution at each generation step. Tune deliberately; many providers recommend changing one sampling control at a time.</p>
+            <div class="parameter-notes">
+              <div class="parameter-note"><b>Temperature</b>Rescales candidate scores before sampling. Lower concentrates probability on the leading candidates; higher spreads probability across more plausible continuations.</div>
+              <div class="parameter-note"><b>Top-p (nucleus)</b>Keeps the smallest candidate set whose combined probability reaches <i>p</i>. It removes the low-probability tail while adapting the set size at each step.</div>
+              <div class="parameter-note"><b>Top-k</b>Keeps only the <i>k</i> highest-probability candidates. It is a fixed-size cap, unlike top-p’s probability-mass threshold.</div>
+              <div class="parameter-note"><b>Seed</b>Initialises the sampler when the provider supports it. It helps controlled experiments, but is not a model-version or platform-stability guarantee.</div>
+            </div>
           </div>
-          <div class="row">
-            <div>Sampling</div>
-            <div>temperature · top-p · top-k · seed</div>
-            <div>variation among plausible next tokens</div>
-          </div>
-          <div class="row">
-            <div>Output budget</div>
-            <div>max output tokens · stop</div>
-            <div>how long the response may become</div>
-          </div>
-          <div class="row">
-            <div>Reasoning</div>
-            <div>effort · thinking level / budget</div>
-            <div>inference-time work on difficult tasks</div>
-          </div>
-          <div class="row">
-            <div>Output &amp; tools</div>
-            <div>JSON schema · tool choice · streaming</div>
-            <div>the interface and allowed actions</div>
+          <div class="parameter-group request">
+            <h3>Request controls: what work and output are allowed?</h3>
+            <div class="parameter-notes">
+              <div class="parameter-note"><b>Max output tokens</b>Sets a ceiling on generated length and cost. Too small can truncate an otherwise correct answer.</div>
+              <div class="parameter-note"><b>Stop sequence</b>Ends generation when a chosen marker appears. It can delimit a completion, but does not validate that the result is complete or well formed.</div>
+              <div class="parameter-note"><b>Reasoning effort</b>Allocates more inference-time work on models that expose it. Use it for difficult tasks only after measuring accuracy, latency, and token cost.</div>
+              <div class="parameter-note"><b>Schema and tool choice</b>Define the response shape and permitted actions. The application must still validate JSON and authorise every tool action.</div>
+            </div>
           </div>
         </div>
         <div class="codegrid reveal">
@@ -949,63 +1006,7 @@ http://localhost:8000/v1</pre>
             <pre>
 config = {&#10;  "max_output_tokens": 800,&#10;  "temperature": 0.2,&#10;  "seed": 42,&#10;  "response_schema": OUTCOME_SCHEMA,&#10;}</pre>
           </div>
-          <div class="codebox">
-            <h3>Two important limits</h3>
-            <p>
-              <b>Low temperature ≠ factual.</b><br />A seed is useful for
-              testing, but does not guarantee identical output after a model or
-              platform change.
-            </p>
-          </div>
         </div>
-      </section>
-      <section class="scene one">
-        <div class="reveal">
-          <div class="kicker">Provider differences</div>
-          <h2>
-            Parameters are <span class="accent">model-dependent.</span
-            ><br />Read the exact API reference.
-          </h2>
-        </div>
-        <div class="table reveal">
-          <div class="row head">
-            <div>Provider / runtime</div>
-            <div>Controls to look for</div>
-            <div>Practical caution</div>
-          </div>
-          <div class="row">
-            <div>OpenAI</div>
-            <div>
-              output limit · model-dependent sampling / reasoning · schemas ·
-              tools
-            </div>
-            <div>capabilities vary by model family</div>
-          </div>
-          <div class="row">
-            <div>Claude</div>
-            <div>max tokens · adaptive thinking / effort · tools</div>
-            <div>
-              current higher tiers can reject non-default sampling values
-            </div>
-          </div>
-          <div class="row">
-            <div>Gemini</div>
-            <div>
-              temperature · top-p/k · seed · stop · output limit · thinking
-            </div>
-            <div>Gemini 3.x guidance favours default sampling</div>
-          </div>
-          <div class="row">
-            <div>Ollama / vLLM</div>
-            <div>sampling · output · stop · context / runtime settings</div>
-            <div>the checkpoint and serving engine define support</div>
-          </div>
-        </div>
-        <p class="reveal" style="margin-top: 25px">
-          Extraction: low variability + schema. Creative drafting: generate
-          candidates, then select. Hard reasoning: compare effort against a
-          measured baseline.
-        </p>
       </section>
       <section class="scene one">
         <div class="reveal">
@@ -1015,32 +1016,12 @@ config = {&#10;  "max_output_tokens": 800,&#10;  "temperature": 0.2,&#10;  "seed
             <span class="accent">quality.</span>
           </h2>
         </div>
-        <div class="table reveal">
-          <div class="row head">
-            <div>Axis</div>
-            <div>Measure</div>
-            <div>Why it matters</div>
-          </div>
-          <div class="row">
-            <div>Task quality</div>
-            <div>accuracy · source fidelity · tests</div>
-            <div>fluent output can still be wrong</div>
-          </div>
-          <div class="row">
-            <div>Reliability</div>
-            <div>schema rate · variance · abstention</div>
-            <div>workflow must behave predictably</div>
-          </div>
-          <div class="row">
-            <div>Operational fit</div>
-            <div>p50/p95 latency · cost · throughput</div>
-            <div>model must fit the system budget</div>
-          </div>
-          <div class="row">
-            <div>Safety / governance</div>
-            <div>data boundary · auditability · injection resilience</div>
-            <div>model output is not an authority</div>
-          </div>
+        <div class="evaluation-groups reveal">
+          <article class="evaluation-note"><h3>Task quality</h3><p>Does the answer meet the task’s own standard? Measure accuracy, source fidelity, rubric score, or executable tests. Fluent language is not evidence of correctness.</p></article>
+          <article class="evaluation-note"><h3>Reliability</h3><p>Does the workflow behave predictably across ordinary and edge cases? Check valid-schema rate, variance across runs, and whether it abstains or routes uncertainty correctly.</p></article>
+          <article class="evaluation-note"><h3>Operational fit</h3><p>Can the system sustain real use? Measure p50/p95 latency, cost per accepted result, and throughput against the application’s budget—not an ideal demo.</p></article>
+          <article class="evaluation-note"><h3>Safety and governance</h3><p>Does it stay within the data boundary and resist untrusted instructions? Test injection resilience, auditability, and the application’s controls around consequential actions.</p></article>
+          <article class="evaluation-note"><h3>User experience</h3><p>Can intended users understand and use the result? Evaluate language quality, multilingual performance, accessibility, and the human-review burden the system creates.</p></article>
         </div>
       </section>
       <section class="scene next reveal">

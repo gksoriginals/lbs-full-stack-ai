@@ -471,7 +471,7 @@ No prompt makes an LLM a source of truth, a secure policy engine, or an accounta
 
 ---
 
-## Slide 19 — A reusable prompt template
+## Slide 19 — A prompt is a runtime contract
 
 ### On slide
 
@@ -493,11 +493,11 @@ No prompt makes an LLM a source of truth, a secure policy engine, or an accounta
 </output_contract>
 ```
 
-> Start with the smallest prompt that defines the task. Add examples, decomposition, retrieval, tools, or fine-tuning only when an evaluation shows why they are needed.
+> A prompt is a request-time contract: task, constraints, evidence, and required output. Add examples, decomposition, retrieval, tools, or fine-tuning only when an evaluation shows why they are needed.
 
 ### Speaker notes
 
-This is a starting structure, not a universal prompt format. The next topic—hands-on with LLMs—should use a concrete task to compare a baseline prompt, a structured prompt, and an evaluated workflow.
+This is a starting structure, not a universal prompt format. It synthesises the chapter: every technique either clarifies the task, constrains the request, improves the evidence available to the model, or makes the output checkable. The next topic—hands-on with LLMs—should use a concrete task to compare a baseline prompt, a structured prompt, and an evaluated workflow.
 
 ---
 
