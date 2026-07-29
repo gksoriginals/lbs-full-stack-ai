@@ -12,7 +12,7 @@
   <div class="progress"></div>
   <main>
     <section class="scene split">
-      <div class="reveal"><div class="kicker">Full Stack &amp; AI · Day 04 · Chapter 05</div><h1>LBS College<br><span class="accent">Assistant</span></h1><p class="lead">We are building a small RAG application that answers questions about LBS College from curated official source chunks.</p><p>Retrieve evidence. Generate an answer. Verify citations. Ask for human help when evidence is missing.</p></div>
+      <div class="reveal"><div class="kicker">Full Stack &amp; AI · Day 04 · Chapter 05</div><h1>LLM<br><span class="accent">Integration</span></h1><p class="lead">We use a small LBS College knowledge assistant to make integration patterns concrete.</p><p>Retrieve evidence. Generate an answer. Verify citations. Ask for human help when evidence is missing.</p></div>
       <div class="contract reveal"><h3>The problem statement</h3><div class="line"><b>Question</b><br>Which undergraduate programmes are offered at LBS College?</div><div class="line"><b>Evidence</b><br>Curated chunks from official LBS College pages.</div><div class="line"><b>Permitted result</b><br>Answer + retrieved source citations + help flag.</div><div class="line"><b>Not permitted</b><br>Inventing facts or citing sources that were not retrieved.</div></div>
     </section>
 
@@ -104,11 +104,27 @@ response = client.chat.completions.create(
     <section class="scene one">
       <div class="reveal"><div class="kicker">Live coding route</div><h2>Walk through the RAG boundary.<br>Then <span class="accent">vibe-code</span> it.</h2><p class="lead">Read the implementation from the curated knowledge base outward, not from the API call inward.</p></div>
       <div class="steps reveal"><div class="step"><div class="number">1</div><div><b>lbs_knowledge_base.json</b> — official LBS chunks with source IDs and URLs.</div></div><div class="step"><div class="number">2</div><div><b>retrieve()</b> — rank and select relevant chunks before generation.</div></div><div class="step"><div class="number">3</div><div><b>build_messages()</b> — system instructions, selected evidence, and one question.</div></div><div class="step"><div class="number">4</div><div><b>answer_lbs_question()</b> — the Groq/OpenAI-compatible model request.</div></div><div class="step"><div class="number">5</div><div><b>validate_answer()</b> — reject citations outside the retrieved set.</div></div></div>
-      <div class="codegrid reveal"><div class="codebox"><h3>Run it</h3><pre class="code">cd docs/demo
-python3 -m pip install openai
-export GROQ_API_KEY="..."
-export GROQ_MODEL="openai/gpt-oss-20b"
-python3 policy_assistant_demo.py</pre></div><div class="codebox"><h3>Change one thing</h3><p>Add an official LBS chunk.<br>Ask a question that retrieves it.<br>Ask an unsupported question.<br>Then replace lexical retrieval with embeddings.</p></div></div>
+      <div class="codegrid reveal"><div class="codebox"><h3>Set up the demo</h3><pre class="code">cd docs/demo
+python3 -m pip install openai python-dotenv
+
+# Create .env (already ignored by Git)
+GROQ_API_KEY=gsk_your_key_here
+GROQ_MODEL=openai/gpt-oss-20b
+
+python3 policy_assistant_demo.py
+# Open http://127.0.0.1:8080</pre></div><div class="codebox"><h3>Keep the boundary</h3><p>Put secrets only in <b>.env</b>.<br>Keep <b>.env</b> in <b>.gitignore</b>.<br>Restart the server after changing model configuration.</p></div></div>
+    </section>
+
+    <section class="scene one">
+      <div class="reveal"><div class="kicker">Audience lab · change one variable</div><h2>Change it.<br><span class="accent">Then explain the result.</span></h2><p class="lead">Keep the same questions and retrieval data while each group changes one part of the application.</p></div>
+      <div class="codegrid reveal"><div class="codebox"><h3>1. Prompt contract</h3><p>Rewrite <b>SYSTEM_INSTRUCTIONS</b> to demand a two-line answer, one citation, and a clear refusal when evidence is missing.</p><p><b>Observe:</b> instructions shape this request; they do not train the model.</p></div><div class="codebox"><h3>2. Few-shot examples</h3><p>Add one grounded answer and one unsupported-question refusal to <b>build_messages()</b>.</p><p><b>Observe:</b> examples demonstrate the desired response pattern at runtime.</p></div><div class="codebox"><h3>3. Temperature + model</h3><p>Run each question five times at <b>0.0</b>, <b>0.3</b>, and <b>0.8</b>. Then change <b>GROQ_MODEL</b> in <b>.env</b>.</p><p><b>Observe:</b> stability, latency, wording, and structured-output behaviour.</p></div><div class="codebox"><h3>4. Retrieval grounding</h3><p>Ask an unsupported question. Add one approved source chunk. Ask again.</p><p><b>Observe:</b> RAG extends factual scope only when relevant evidence is retrieved.</p></div></div>
+      <div class="callout reveal"><b>Group report:</b> show one success, one failure, the changed code, and whether the returned citations stayed within the retrieved sources.</div>
+    </section>
+
+    <section class="scene split">
+      <div class="reveal"><div class="kicker">Shared evaluation set</div><h2>Do not judge a change<br>from <span class="accent">one answer.</span></h2><p class="lead">Run the same questions before and after each modification. Record answer usefulness, citations, and the human-help flag.</p></div>
+      <div class="contract reveal"><h3>Test these five questions</h3><div class="line"><b>1</b><br>Which undergraduate programmes are offered at LBS College of Engineering?</div><div class="line"><b>2</b><br>Where is the college located?</div><div class="line"><b>3</b><br>Does the college offer a B.Tech programme in Biomedical Engineering?</div><div class="line"><b>4</b><br>What is the hostel fee?</div><div class="line"><b>5</b><br>Which support does the Career Guidance Cell provide?</div></div>
+      <div class="quote reveal">Questions 3 and 4 are deliberate boundary tests. With no approved evidence, the correct result is uncertainty—not a fluent invention.</div>
     </section>
 
     <section class="scene one">
@@ -133,11 +149,11 @@ python3 policy_assistant_demo.py</pre></div><div class="codebox"><h3>Change one 
         .find(item => item.querySelector('.course-toc-number')?.textContent === '05');
       if (!chapter) return;
       chapter.querySelector('.course-toc-list').innerHTML = `
-        <li>LBS College Assistant problem</li>
-        <li>Authority, trusted sources, and output contract</li>
-        <li>Curated RAG retrieval and Groq integration</li>
-        <li>Structured answer and tool authority</li>
-        <li>Code walkthrough and RAG boundary</li>
+        <li>LLM integration problem and authority</li>
+        <li>Trusted source, RAG retrieval, and Groq</li>
+        <li>Structured output and tool authority</li>
+        <li>Project setup and code walkthrough</li>
+        <li>Audience lab and shared evaluation set</li>
         <li><a href="./05-llm-integration.html">Open Chapter 05 →</a></li>`;
     })();
   </script>

@@ -2,7 +2,7 @@
 
 ## Chapter outcome
 
-Build an **LBS College Assistant** that answers questions from a curated, official LBS College knowledge base. The assistant retrieves relevant source chunks before it calls a hosted Groq model, then returns an answer with citations to the retrieved chunks.
+Learn the application patterns behind **LLM Integration** through an LBS College knowledge-assistant demo. The demo retrieves relevant source chunks before it calls a hosted Groq model, then returns an answer with citations to the retrieved chunks.
 
 The demo deliberately uses a small lexical retriever rather than a vector database: it keeps the complete Retrieval-Augmented Generation (RAG) path visible in one Python file. The architecture is the same when the retriever is later replaced by embeddings, hybrid search, or a database.
 
@@ -197,10 +197,19 @@ For example, a future assistant could propose a `find_admission_contact` tool. I
 
 ```bash
 cd docs/demo
-python3 -m pip install openai
-export GROQ_API_KEY="..."
-export GROQ_MODEL="openai/gpt-oss-20b"
+python3 -m pip install openai python-dotenv
+```
+
+Create `docs/demo/.env` (it is already ignored by Git):
+
+```dotenv
+GROQ_API_KEY=gsk_your_key_here
+GROQ_MODEL=openai/gpt-oss-20b
+```
+
+```bash
 python3 policy_assistant_demo.py
+# Open http://127.0.0.1:8080
 ```
 
 ### Speaker notes
@@ -211,7 +220,46 @@ For a live modification, add a new official source chunk; ask a question that sh
 
 ---
 
-## Slide 9 — The integration mental model
+## Slide 9 — Audience lab: change one variable
+
+### On slide
+
+| Activity | Change | Observe |
+|---|---|---|
+| Prompt contract | Update `SYSTEM_INSTRUCTIONS` to require a two-line answer, one citation, and an evidence-missing refusal. | Prompting changes the current request, not the learned parameters. |
+| Few-shot examples | Add one grounded answer and one unsupported-question refusal to `build_messages()`. | Examples demonstrate a response pattern at runtime. |
+| Temperature + model | Run the same questions at `0.0`, `0.3`, `0.8`; then change `GROQ_MODEL` in `.env`. | Compare stability, latency, wording, and structured-output behaviour. |
+| Retrieval grounding | Ask an unsupported question; add one approved source chunk; ask again. | RAG extends factual scope only when relevant evidence is retrieved. |
+
+Every group reports one success, one failure, the changed code, and whether citations remained within the retrieved source IDs.
+
+### Speaker notes
+
+Do not let teams change every variable at once. They should start from the same code and use the same test questions. This makes the experiment interpretable: variation might come from prompting, sampling, model selection, or retrieval—not from an uncontrolled mixture of all four.
+
+---
+
+## Slide 10 — Shared evaluation set
+
+### On slide
+
+1. Which undergraduate programmes are offered at LBS College of Engineering?
+2. Where is the college located?
+3. Does the college offer a B.Tech programme in Biomedical Engineering?
+4. What is the hostel fee?
+5. Which support does the Career Guidance Cell provide?
+
+Record for every run: answer usefulness, returned citations, and `needs_human_help`.
+
+> Questions 3 and 4 are boundary tests. When the approved knowledge base has no evidence, uncertainty is the correct result.
+
+### Speaker notes
+
+Questions 1, 2, and 5 test supported information. Questions 3 and 4 test whether the application declines to invent details. Ask every group to run the same set before and after its single change, then discuss both the strongest answer and the most useful refusal.
+
+---
+
+## Slide 11 — The integration mental model
 
 ### On slide
 
