@@ -87,43 +87,27 @@ GPT-3 made this shift visible in 2020 by showing strong few-shot task performanc
 
 ---
 
-## Slide 3 — Prompt: the request-time task specification
+## Bridge — Learn patterns once; generate step by step
 
 ### On slide
 
-> A **prompt** is the request-time material supplied to the model: instructions, examples, user input, and selected context.
-
-~~~text
-System / developer instructions
-+ user request
-+ examples
-+ retrieved evidence
-+ conversation history
-────────────────────────────
-          prompt context
-~~~
-
-A prompt can influence this response. It does **not** permanently change model parameters.
-
-### What a well-specified prompt supplies
-
-| Element | Purpose |
-| --- | --- |
-| Goal | what the model should produce |
-| Context | facts or source material it may use |
-| Constraints | scope, tone, exclusions, or policies |
-| Output contract | format, schema, length, or evidence requirement |
-| Examples | demonstrations of the expected pattern |
+```text
+1. Train      Repeated examples adjust parameters to reduce prediction error.
+        ↓
+2. Represent  Parameters capture patterns in syntax, style, code, and meaning.
+        ↓
+3. Infer      A new prompt enters the learned processing pipeline.
+        ↓
+4. Generate  Select a likely next token, append it, then repeat.
+```
 
 ### Speaker notes
 
-A prompt is not merely the line a user types into a chat box. In a real application it is a constructed context containing instructions, selected data, examples, and often tool results. The model sees tokens, not an abstract user intention.
-
-Adding a document to a prompt is runtime conditioning, not training. The model may use the document if it fits in context and is presented clearly, but the document does not become a permanent model memory.
+During pre-training, the model adjusts parameters over a very large corpus. At runtime, it does not update those parameters from the user’s prompt. It uses the learned parameters and the tokens currently in context to produce a next-token distribution, selects one token, appends it, and repeats.
 
 ---
 
-## Slide 4 — Token and tokenizer: text becomes model input
+## Slide 3 — Token and tokenizer: text becomes model input
 
 ### On slide
 
@@ -145,10 +129,10 @@ flowchart LR
 ~~~
 
 ~~~text
-"unpredictable"  →  "un" | "predict" | "able"
+"unpredictable"  →  "un" | "predict" | "able"  →  [491] | [10321] | [987]
 ~~~
 
-Subword and byte-level units avoid requiring one vocabulary entry for every possible word, identifier, spelling variant, or code fragment.
+The pieces and ID values are illustrative; each model has its own tokenizer and vocabulary. Subword and byte-level units avoid requiring one vocabulary entry for every possible word, identifier, spelling variant, or code fragment.
 
 ### Speaker notes
 
@@ -158,7 +142,7 @@ This affects context-window usage, API cost, truncation, and output limits. It a
 
 ---
 
-## Slide 5 — Embeddings: token IDs become vectors
+## Slide 4 — Embeddings: token IDs become vectors
 
 ### On slide
 
@@ -170,10 +154,12 @@ This affects context-window usage, API cost, truncation, and output limits. It a
 
 ~~~mermaid
 flowchart LR
-  ID["Token ID\n7821"] --> LOOKUP["Embedding matrix lookup"]
-  LOOKUP --> V["Token vector\nlength = model hidden size"]
+  ID["Token ID\n[10321]"] --> LOOKUP["Embedding matrix lookup\nread row 10321"]
+  LOOKUP --> V["Initial embedding vector\n[0.12, −0.84, 0.37, …]"]
   V --> TR["Transformer layers"]
 ~~~
+
+The vector values are illustrative. Real embeddings have hundreds or thousands of dimensions.
 
 Two distinctions:
 
@@ -195,7 +181,7 @@ Embedding vectors let gradient-based learning alter relationships between token 
 
 ---
 
-## Slide 6 — Context window: working memory for this generation
+## Slide 5 — Context window: working memory for this generation
 
 ### On slide
 
@@ -230,9 +216,9 @@ Attention has memory and compute costs that grow with sequence length, so a mode
 
 ## Attention-first teaching sequence
 
-Present the next material in this order: **Slide 9 — attention problem** → **Slide 10 — QKV** → **Slide 11 — multi-head attention and masks** → **Architecture follow-up** → **Transformer components**. The audience first understands the operation, then sees where the original Transformer uses it.
+Present the next material in this order: **Slide 8 — attention problem and walkthrough** → **Slide 9 — QKV inside one head** → **Slide 10 — multi-head attention** → **Architecture follow-up** → **Transformer components**. The audience first sees one token identify relevant context, then follows the QKV computation that produces that update, and only then asks why several learned attention patterns must run in parallel.
 
-## Architecture follow-up — The original Transformer: encoder and decoder
+## Slide 6 — Architecture follow-up: the original Transformer
 
 ### On slide
 
@@ -270,7 +256,7 @@ The architecture therefore answers a different question: **where is attention us
 
 ---
 
-## Slide 8 — What each Transformer component does
+## Slide 7 — What each Transformer component does
 
 ### On slide
 
@@ -299,7 +285,22 @@ Modern LLMs use variants—pre-normalisation, RMSNorm, rotary position methods, 
 
 ---
 
-## Slide 9 — Attention: a token asks which context matters
+## Bridge — Why Transformers scaled beyond LSTMs
+
+### On slide
+
+- **LSTMs could generate text:** they also predict the next token, but process positions serially through one evolving hidden state.
+- **Transformers retain token-level representations:** attention lets the current token relate directly to relevant earlier tokens instead of forcing all information through one compressed state.
+- **This made broad pre-training practical at scale:** training can be parallelised efficiently, and long prompts can contain instructions and examples that influence the current response.
+- **In-context learning is not weight update:** the model temporarily follows the pattern in prompt examples; its learned parameters remain unchanged during that request.
+
+### Speaker notes
+
+LSTMs are not incapable of generation or using context. An autoregressive LSTM can generate text and sometimes infer a pattern from examples in its prefix. The limitation is scale and reliability over long, complex prompts. An LSTM processes tokens serially and repeatedly compresses the past into one hidden state. A Transformer keeps a representation for every token and attention can directly select relevant earlier positions. This made long-context pattern use and large-scale GPU training much more effective. GPT-3 demonstrated the result: prompts with instructions and example input-output pairs can be continued as a temporary task, without parameter updates.
+
+---
+
+## Slide 8 — Attention: a token asks which context matters
 
 ### On slide
 
@@ -328,41 +329,49 @@ For translation, the same mechanism can connect a word to the grammatical subjec
 
 ---
 
-## Slide 10 — Query, Key, Value, and attention weights
+## Slide 9 — Inside one attention head: Query, Key, Value
 
 ### On slide
 
-> **Objective:** update the representation of **it** so that it carries information about **animal**, not **street**.
+> **Objective:** explain how the same Head 1 that highlights **it ← animal** produces that relationship.
 
-The problem is that both tokens are available in the context window. The model needs a learned way to score every candidate token, then transfer information primarily from the relevant one.
+Q, K, and V are three learned views of the same token representations. They separate three jobs: **what the focus token needs** → **how candidates are matched** → **what information selected candidates contribute**.
 
-> **Q, K, and V separate those jobs:** make a request → compare candidates → transfer selected information.
+~~~text
+Input:  The | animal | was | tired | so | it | slept
+Q:                                      Q(it)
+K:       K(The) K(animal) K(was) K(tired) K(so) K(it) K(slept)
+V:       V(The) V(animal) V(was) V(tired) V(so) V(it) V(slept)
+
+Q(it) × K(all tokens) → softmax weights (animal: high) → Σ weight × V(token) → updated it
+~~~
 
 For every token representation, the model learns three projections:
 
-| Component | Intuitive question | Function |
-| --- | --- | --- |
-| **Query (Q)** | “What context do I need?” | learned request made by the focus token |
-| **Key (K)** | “How can I be matched?” | learned searchable tag for each candidate token |
-| **Value (V)** | “What can I contribute if selected?” | learned information passed forward after weighting |
+| Component | Role |
+| --- | --- |
+| **Query (Q)** | learned request made by the focus token **it** |
+| **Key (K)** | learned match tag for every permitted candidate token |
+| **Value (V)** | learned information mixed into the focus representation after weighting |
 
 ~~~mermaid
 flowchart LR
-  X["One representation per token\nThe | animal | ... | street | ... | it"] --> Q["Query of focus token it"]
-  X --> K["Keys of all candidate tokens"]
-  X --> V["Values of all candidate tokens"]
-  Q --> MATCH["Compare each Q with\npermitted K"]
+  I["Focus token: it"] --> Q["Query: what should update me?"]
+  C["Permitted candidates: The | animal | …"] --> K["Keys: learned match tags"]
+  C --> V["Values: learned information to contribute"]
+  Q --> MATCH["Scaled dot-product score: QKᵀ / √dₖ"]
   K --> MATCH
-  MATCH --> MASK["Apply mask if required"]
-  MASK --> W["Softmax → attention weights"]
-  W --> MIX["Weighted sum of V"]
+  MATCH --> W["Softmax → relevance weights"]
+  W --> MIX["Weighted sum of Values"]
   V --> MIX
-  MIX --> O["Contextual representations"]
+  MIX --> O["Updated representation of it\nmostly informed by animal"]
 ~~~
 
 ### Speaker notes
 
-Start with the concrete objective, not the names Q, K, and V: make “it” refer to “animal” rather than “street.” In the visual, show the sentence first as an illustrative token-level sequence: every token enters attention with its own representation. “It” supplies the focus Query; every permitted candidate token—including “animal” and “street”—supplies a Key and a Value. Query–key comparisons score every candidate; softmax normalises the scores; and the model combines their values, giving more weight to “animal” in this illustrative case. Actual token boundaries depend on the model’s tokenizer.
+The preceding multi-head visual establishes the reason for several heads. Now zoom into Head 1. The point is not that Q, K, and V are separate objects in language; they are three learned projections of the same incoming token representations. “It” supplies a Query: a learned request for useful context. Every permitted token—including “animal” and “street”—supplies a Key for matching and a Value for information transfer. In the original Transformer, Query–Key comparisons use a **scaled dot product**, not cosine similarity: `softmax(QKᵀ / √dₖ)` creates the attention weights. The model then combines Values using those weights, giving more weight to “animal” in this illustrative case. Actual token boundaries depend on the model’s tokenizer.
+
+For the animated visual: (1) reveal `Q(it)` and the Key row, (2) highlight the high score for `K(animal)`, (3) reveal the weighted Value mix with `V(animal)` prominent, and (4) reveal `h′(it)`, the contextual vector for `it`. This output is not the word “animal”; it is a new vector for `it` that is strongly informed by the information carried by `animal`.
 
 **Why use three projections rather than one?** Matching and information transfer are different learned jobs. A key can represent how a token should be matched by other tokens, while a value can represent the information it contributes after a match; the query represents what the focus token needs. Q, K, and V are not hand-written semantic fields—they are learned projections that give attention separate spaces for relevance and content.
 
@@ -370,19 +379,13 @@ The database analogy is useful but incomplete. Queries, keys, and values are lea
 
 ---
 
-## Slide 11 — Multi-head attention and masks
+## Slide 10 — Multi-head attention and masks
 
 ### On slide
 
-> **Multi-head attention** performs multiple attention operations in parallel, then concatenates and projects their outputs.
+> **Multi-head attention** performs several learned attention operations in parallel, then concatenates and projects their outputs.
 
-Different heads may learn useful patterns such as:
-
-- local syntax;
-- long-range reference;
-- punctuation and delimiters;
-- semantic similarity;
-- code structure.
+For the sentence **“The animal was tired, so it slept”**, one head may give high weight from **it** to **animal**, while another may capture a different pattern such as the relation between **slept** and **tired**. These are illustrative patterns, not manually assigned questions or guaranteed one-to-one meanings for heads.
 
 ### Masks define what is permitted
 
@@ -399,13 +402,15 @@ At "will":       ✓ The   ✓ model   ✗ predict
 
 ### Speaker notes
 
-Multi-head attention does not mean every head maps cleanly to a human concept. It gives the model multiple learned subspaces for representing relationships, then combines those results.
+One head is not “the antecedent head” by definition. Every head has separate learned Q, K, and V projections, so it can score and mix context in a different representation subspace. The model learns which patterns are useful from training data; the examples on the slide make the reason for parallel heads intuitive, rather than claiming heads have fixed human labels.
+
+Do not conflate **heads** with **layers**. Heads operate in parallel inside one attention layer; stacked Transformer layers then repeat attention and MLP processing sequentially, refining every token representation further.
 
 The causal mask is essential for decoder generation. Training can process target positions efficiently in parallel, but the mask prevents each position from seeing the future token it is supposed to predict.
 
 ---
 
-## Slide 12 — Encoder models, decoder models, and encoder–decoder models
+## Slide 11 — Encoder models, decoder models, and encoder–decoder models
 
 ### On slide
 
@@ -430,7 +435,7 @@ GPT-style models are decoder-only. The causal restriction is what makes autoregr
 
 ---
 
-## Slide 13 — Pre-training learns patterns; prompting supplies this task
+## Slide 12 — Pre-training learns patterns; prompting supplies this task
 
 ### On slide
 
@@ -459,7 +464,7 @@ Instruction tuning and preference optimisation can make a model more useful in c
 
 ---
 
-## Slide 14 — Inference: from prompt to response
+## Slide 13 — Inference: from prompt to response
 
 ### On slide
 
@@ -490,7 +495,7 @@ Temperature is not a factuality control. For structured extraction, lower random
 
 ---
 
-## Slide 15 — Capabilities and limitations follow from the design
+## Slide 14 — Capabilities and limitations follow from the design
 
 ### On slide
 
@@ -520,7 +525,7 @@ The model is neither a source of truth, a policy engine, nor an accountable acto
 
 ---
 
-## Slide 16 — The faculty-level mental model
+## Slide 15 — The faculty-level mental model
 
 ### On slide
 

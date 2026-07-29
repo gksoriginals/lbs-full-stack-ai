@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Course Policy Assistant — Local Demo</title>
+  <title>LBS College Assistant — Groq RAG Demo</title>
   <style>
     :root{--ink:#292721;--paper:#fffaf0;--coral:#ef7355;--sun:#ffdc77;--mint:#c8ece2;--lilac:#e4d8f7}
     *{box-sizing:border-box}body{margin:0;color:var(--ink);background-color:var(--paper);background-image:radial-gradient(rgba(92,74,46,.15) 1.1px,transparent 1.1px);background-size:23px 23px;font-family:"Avenir Next",Avenir,sans-serif}
@@ -12,21 +12,21 @@
 </head>
 <body>
   <main>
-    <div class="kicker">Local open-model prototype</div>
-    <h1>Course policy<br><span style="color:var(--coral)">assistant</span></h1>
-    <p class="lead">A small, visible integration: approved evidence → local Ollama model → validated JSON answer.</p>
+    <div class="kicker">Hosted Groq prototype</div>
+    <h1>LBS College<br><span style="color:var(--coral)">assistant</span></h1>
+    <p class="lead">A small, visible RAG workflow: retrieve official LBS chunks → Groq model call → validate citations.</p>
     <section class="board">
-      <label for="question">Ask about attendance eligibility</label>
-      <textarea id="question">Can a student with 72% attendance sit for the examination?</textarea>
-      <button id="ask" type="button">Ask the local model →</button>
-      <p class="hint">The Python server validates the returned JSON and rejects citations that are not in the approved excerpts.</p>
-      <div class="evidence"><h2>Approved evidence in this demo</h2><p><b>attendance-regulation-2026-s4</b> — Students require at least 75% attendance to sit for the examination.</p><p><b>attendance-regulation-2026-s7</b> — A documented condonation decision may alter eligibility.</p></div>
+      <label for="question">Ask about LBS College</label>
+      <textarea id="question">Which undergraduate programmes are offered at LBS College of Engineering?</textarea>
+      <button id="ask" type="button">Ask the LBS assistant →</button>
+      <p class="hint">The browser never receives the Groq key. The Python server retrieves curated official chunks first, then rejects citations outside that retrieved set.</p>
+      <div class="evidence"><h2>Curated knowledge base</h2><p>Official LBS College chunks: about the college, programmes, departments, contact information, and Career Guidance Cell.</p><p>The result below will show which chunks were retrieved for this question.</p></div>
       <div class="result" id="result" aria-live="polite"><div class="status" id="status"></div><div class="answer" id="answer"></div></div>
     </section>
   </main>
   <script>
     const question=document.querySelector('#question'),ask=document.querySelector('#ask'),result=document.querySelector('#result'),status=document.querySelector('#status'),answer=document.querySelector('#answer');
-    ask.addEventListener('click',async()=>{ask.disabled=true;ask.textContent='Asking…';result.classList.add('show');status.textContent='Calling the local model and validating its response…';answer.textContent='';try{const response=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question.value})});const payload=await response.json();if(!response.ok)throw new Error(payload.error);status.textContent='Validated application result';answer.textContent=JSON.stringify(payload.answer,null,2)}catch(error){status.textContent='Safe failure';answer.textContent=error.message}finally{ask.disabled=false;ask.textContent='Ask the local model →'}});
+    ask.addEventListener('click',async()=>{ask.disabled=true;ask.textContent='Retrieving…';result.classList.add('show');status.textContent='Retrieving official chunks, calling Groq, and validating citations…';answer.textContent='';try{const response=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question.value})});const payload=await response.json();if(!response.ok)throw new Error(payload.error);status.textContent=`Validated RAG result · ${payload.model}`;answer.textContent=JSON.stringify({answer:payload.answer,retrieved_sources:payload.retrieved_sources},null,2)}catch(error){status.textContent='Safe failure';answer.textContent=error.message}finally{ask.disabled=false;ask.textContent='Ask the LBS assistant →'}});
   </script>
 </body>
 </html>

@@ -43,9 +43,23 @@ Broad data → pre-trained foundation model → task-specific Generative AI appl
 
 The word _generative_ means that the system produces a new sample rather than only assigning a label to an existing sample. A text model can continue an input sequence; an image model can create an image from a textual condition; a structured-output model can create a new JSON record from an unstructured document.
 
-The important term introduced here is **foundation model**. It is the broadly trained base model behind most modern Generative AI products.
+Before introducing foundation models, separate three independent ideas: **objective** (generate or decide), **architecture** (CNN, RNN/LSTM, Transformer), and **training/reuse paradigm** (foundation model). Generative AI predates foundation models: autoregressive RNNs/LSTMs, VAEs, GANs, and sequence-to-sequence models can all generate new samples.
 
-## Slide 2 — What is a Foundation Model?
+## Slide 2 — What makes a model generative?
+
+### On slide
+
+- **Objective:** Generative AI creates a new sample; discriminative AI predicts a label, score, or value. An LSTM can continue `The cat…` or return `positive`, depending on its training objective.
+
+- **Architecture:** CNN, RNN/LSTM, and Transformer describe how a model is built. Architecture alone does not decide whether the model is generative or discriminative.
+
+- **Foundation-model paradigm:** A foundation model is broadly self-supervised pre-trained, then adapted across many tasks. LSTMs and GANs could be generative long before foundation models.
+
+### Speaker notes
+
+The architecture does not decide whether a model is generative. An LSTM trained to predict the next word is generative; the same LSTM trained for sentiment classification is discriminative. Foundation models add a third idea: broad self-supervised pre-training for reuse. They are the dominant modern approach to broad generative capability, not a synonym for Generative AI.
+
+## Slide 3 — What is a Foundation Model?
 
 ### On slide
 
@@ -55,11 +69,17 @@ The important term introduced here is **foundation model**. It is the broadly tr
 flowchart LR
   D["Broad data\ntext, code, images, audio"] --> S["Self-supervised learning\npredict the next or hidden part"]
   S --> F["Foundation model\nreusable learned patterns"]
+  F --> P["Prompting\nspecify this request"]
+  F --> R["Retrieval\nadd approved evidence"]
+  F --> T["Fine-tuning\nadapt learned behaviour"]
+  P --> A["Task-specific application"]
+  R --> A
+  T --> A
 ```
 
 **The key idea:** the raw data supplies the learning signal; people do not need to label every training example.
 
-A foundation model is the **base capability**. It is not yet a complete application.
+A foundation model is called **foundation** because it provides a broadly pre-trained base that can support many downstream applications through adaptation. It is a base capability, not yet a complete application.
 
 ### Self-supervised learning
 
@@ -73,38 +93,17 @@ A foundation model is the **base capability**. It is not yet a complete applicat
 
 For a GPT-style language model, the earlier tokens are the input and the next token is the target. Repeating this across very large corpora lets the model learn broad statistical patterns without manually labelling every sentence.
 
-### Speaker notes
-
-Modern Generative AI is usually built on foundation models. Self-supervised learning makes their broad pre-training possible because the corpus supplies the learning signal at scale. The foundation model then contains reusable representations and patterns, and a chat product, coding assistant, or document-processing tool adapts that model to a particular job. Before discussing adaptation, we need a high-level view of how that broadly trained model turns a new input into an output.
-
----
-
-## Slide 3 — How does a Foundation Model produce a result?
-
-### On slide
+GPT’s causal objective supports left-to-right text generation. BERT’s masked-token objective learns bidirectional representations that are especially useful for classification, search, and extraction.
 
 ```mermaid
-flowchart LR
-  D["Broad training data"] --> T["Split data into tokens or other units"]
-  T --> L["Neural network learns patterns and relationships"]
-  L --> F["Foundation-model parameters"]
-  I["New prompt / input"] --> P["Same input processing"]
-  P --> F
-  F --> N["Predict next useful unit"]
-  N --> O["Generate output step by step"]
+flowchart TD
+  G1["GPT: The compiler reports an"] --> G2["Predict: error\nEarlier tokens only"]
+  B1["BERT: The compiler reports an [MASK] today"] --> B2["Reconstruct: error\nTokens on both sides"]
 ```
-
-| Stage                  | High-level explanation                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Training               | The model repeatedly sees examples and adjusts internal parameters to reduce prediction error.                |
-| Learned representation | Its parameters encode statistical patterns: syntax, style, code patterns, visual features, and relationships. |
-| Input processing       | A new prompt is converted into the same internal representation used during training.                         |
-| Inference              | The model uses its learned patterns plus the prompt context to predict a likely next unit.                    |
-| Generation             | It repeats that prediction step until it produces text, code, an image, or another requested output.          |
 
 ### Speaker notes
 
-At a high level, a foundation model is a very large neural network whose parameters have been tuned by exposure to broad data. For a language model, the input text is tokenised, processed through the network, and used to predict the next token. The predicted token is appended to the input; the process repeats. Image and audio models use different representations and generation procedures, but the same broad idea applies: learn patterns during training, then use those learned patterns to produce a new sample from a condition. This broad pre-training approach changed the unit of AI development from one model per task to one adaptable base model.
+Modern Generative AI is usually built on foundation models. They are called “foundation” models because self-supervised learning on broad data creates a reusable base that can be adapted for many downstream applications, rather than training a separate model from scratch for each task. A chat product, coding assistant, or document-processing tool adapts that base to a particular job. The next question is how this changed the way AI systems are developed.
 
 ---
 
@@ -145,7 +144,7 @@ Earlier systems remain useful. Rules are still best for fixed policy logic, data
 
 ---
 
-## Slide 5 — Generative AI versus Discriminative AI
+## Reference — Generative AI versus Discriminative AI
 
 ### On slide
 
@@ -167,9 +166,19 @@ Earlier systems remain useful. Rules are still best for fixed policy logic, data
 
 **Architecture caveat:** CNN, RNN/LSTM, and Transformer are architectures. The objective—not the architecture alone—determines whether a model is generative or discriminative.
 
+**Keep these three questions separate:**
+
+| Question | Answer | Example |
+| --- | --- | --- |
+| What does it do? | **Generative AI** creates a new sample; discriminative AI predicts a label, score, or value. | An LSTM that continues `The cat…` is generative; an LSTM that returns `positive` is discriminative. |
+| How is it built? | **Architecture** describes the computational design. | CNN, RNN/LSTM, Transformer. |
+| How was it trained and intended to be reused? | A **foundation model** is broadly pre-trained, usually self-supervised, then adapted across many tasks. | GPT, Llama, Claude, Gemini; diffusion and multimodal foundation models. |
+
+Generative AI predates foundation models: Markov models, HMMs, VAEs, GANs, autoregressive RNNs/LSTMs, and sequence-to-sequence models can all be generative. Foundation models are the current dominant way to build broad, reusable generative capability at scale—not a synonym for Generative AI.
+
 ### Speaker notes
 
-A GPT-style model is trained to predict the next token; that is generative. A BERT classifier is trained on labelled examples such as spam/not-spam; that is discriminative. The two are complementary. This distinction helps identify the tasks for which a generative model adds value.
+A GPT-style model is trained to predict the next token; that is generative. A BERT classifier is trained on labelled examples such as spam/not-spam; that is discriminative. The same LSTM architecture could do either job: next-token prediction makes it generative, while sentiment classification makes it discriminative. Foundation models add a third, independent idea: broad self-supervised pre-training and reuse across many tasks. The three distinctions—objective, architecture, and training/reuse paradigm—prevent the common mistake of treating “Transformer,” “generative,” and “foundation model” as interchangeable terms.
 
 ---
 
