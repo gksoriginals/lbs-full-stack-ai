@@ -216,7 +216,7 @@ Attention has memory and compute costs that grow with sequence length, so a mode
 
 ## Attention-first teaching sequence
 
-Present the next material in this order: **Slide 8 — attention problem and walkthrough** → **Slide 9 — QKV inside one head** → **Slide 10 — multi-head attention** → **Architecture follow-up** → **Transformer components**. The audience first sees one token identify relevant context, then follows the QKV computation that produces that update, and only then asks why several learned attention patterns must run in parallel.
+Present the next material in this order: **attention problem** → **Slide 8 — QKV inside one head** → **Slide 9 — multi-head attention** → **Architecture follow-up** → **Transformer components**. The audience first frames the relevance question, then follows the QKV computation that produces one contextual update, and only then asks why several learned attention patterns must run in parallel.
 
 ## Slide 6 — Architecture follow-up: the original Transformer
 
@@ -300,36 +300,9 @@ LSTMs are not incapable of generation or using context. An autoregressive LSTM c
 
 ---
 
-## Slide 8 — Attention: a token asks which context matters
+> Attention asks: **among the available tokens, what context should influence this token now?** The QKV computation below produces that decision.
 
-### On slide
-
-Consider:
-
-> **The animal** did not cross the street because **it** was too tired.
-
-When representing **it**, relevant context should include **animal** much more than **street**.
-
-~~~mermaid
-flowchart LR
-  I["Current token:\n'it'"] --> ASK["Which allowed context\nis relevant?"]
-  ASK --> A["high relevance\nanimal"]
-  ASK --> S["low relevance\nstreet"]
-  A --> R["context-aware\nrepresentation of 'it'"]
-  S --> R
-~~~
-
-> **Self-attention** lets each token construct a weighted summary of other permitted tokens in the same sequence.
-
-### Speaker notes
-
-Attention is learned and context-dependent. It is not a symbolic grammar rule, and a high attention weight does not provide a complete human explanation. Its value is that a token can relate directly to relevant context without forcing all information through a single recurrent hidden state.
-
-For translation, the same mechanism can connect a word to the grammatical subject or noun phrase needed to select the correct translation, even when that context is far away.
-
----
-
-## Slide 9 — Inside one attention head: Query, Key, Value
+## Slide 8 — Inside one attention head: Query, Key, Value
 
 ### On slide
 
@@ -338,18 +311,26 @@ For translation, the same mechanism can connect a word to the grammatical subjec
 Q, K, and V are three learned views of the same token representations. They separate three jobs: **what the focus token needs** → **how candidates are matched** → **what information selected candidates contribute**.
 
 ~~~text
-Input:  The | animal | was | tired | so | it | slept
-Q:                                      Q(it)
-K:       K(The) K(animal) K(was) K(tired) K(so) K(it) K(slept)
-V:       V(The) V(animal) V(was) V(tired) V(so) V(it) V(slept)
+Input representations H:   The | animal | was | tired | so | it | slept
+                              ├── H × WQ → Q(it), the focus Query
+                              ├── H × WK → one Key per token
+                              └── H × WV → one Value per token
 
-Q(it) × K(all tokens) → softmax weights (animal: high) → Σ weight × V(token) → updated it
+Q(it) compares with every K(token)
+        ↓
+scaled dot-product scores → softmax weights
+        ↓
+0.03V(The) + 0.70V(animal) + ... → attention output for it
+        ↓
+a(it) = 0.03V(The) + 0.70V(animal) + ...
+original H(it) + a(it) → contextual H′(it)
 ~~~
 
-For every token representation, the model learns three projections:
+For every token representation, the model learns three projection matrices:
 
 | Component | Role |
 | --- | --- |
+| **WQ, WK, WV** | learned matrices that project the same input representation into three different spaces |
 | **Query (Q)** | learned request made by the focus token **it** |
 | **Key (K)** | learned match tag for every permitted candidate token |
 | **Value (V)** | learned information mixed into the focus representation after weighting |
@@ -371,7 +352,9 @@ flowchart LR
 
 The preceding multi-head visual establishes the reason for several heads. Now zoom into Head 1. The point is not that Q, K, and V are separate objects in language; they are three learned projections of the same incoming token representations. “It” supplies a Query: a learned request for useful context. Every permitted token—including “animal” and “street”—supplies a Key for matching and a Value for information transfer. In the original Transformer, Query–Key comparisons use a **scaled dot product**, not cosine similarity: `softmax(QKᵀ / √dₖ)` creates the attention weights. The model then combines Values using those weights, giving more weight to “animal” in this illustrative case. Actual token boundaries depend on the model’s tokenizer.
 
-For the animated visual: (1) reveal `Q(it)` and the Key row, (2) highlight the high score for `K(animal)`, (3) reveal the weighted Value mix with `V(animal)` prominent, and (4) reveal `h′(it)`, the contextual vector for `it`. This output is not the word “animal”; it is a new vector for `it` that is strongly informed by the information carried by `animal`.
+For the animated visual: (1) start from one input row, (2) reveal `H × WQ`, `H × WK`, and `H × WV` to form Q, K, and V, (3) show `Q(it)` matching against every Key, (4) reveal illustrative softmax weights with `animal` high, (5) show each weight multiplying its aligned Value, and (6) reveal `H′(it)`, the contextual vector for `it`. This output is not the word “animal”; it is a new vector for `it` that is strongly informed by the information carried by `animal`.
+
+The final residual line is deliberately simplified to one head: a full Transformer also applies an output projection and LayerNorm around this sublayer.
 
 **Why use three projections rather than one?** Matching and information transfer are different learned jobs. A key can represent how a token should be matched by other tokens, while a value can represent the information it contributes after a match; the query represents what the focus token needs. Q, K, and V are not hand-written semantic fields—they are learned projections that give attention separate spaces for relevance and content.
 
@@ -379,7 +362,7 @@ The database analogy is useful but incomplete. Queries, keys, and values are lea
 
 ---
 
-## Slide 10 — Multi-head attention and masks
+## Slide 9 — Multi-head attention and masks
 
 ### On slide
 
