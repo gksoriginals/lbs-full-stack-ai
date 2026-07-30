@@ -107,7 +107,7 @@ response = client.chat.completions.create(
       <div class="codegrid reveal"><div class="codebox"><h3>Set up the demo</h3><pre class="code">cd docs/demo
 python3 -m pip install openai python-dotenv
 
-# Create .env (already ignored by Git)
+# Create .env in the project root
 GROQ_API_KEY=gsk_your_key_here
 GROQ_MODEL=openai/gpt-oss-20b
 
@@ -132,7 +132,7 @@ python3 policy_assistant_demo.py
       <div class="flowline reveal"><div class="node">Curated LBS evidence<small>official chunks with stable IDs and URLs</small></div><div class="flow">→</div><div class="node">Retrieve top chunks<small>only relevant evidence enters the prompt</small></div><div class="flow">→</div><div class="node">Hosted LLM<small>Groq request with controlled decoding</small></div><div class="flow">→</div><div class="node">Validated answer<small>citations, human-help flag, or safe failure</small></div></div>
     </section>
 
-    <section class="scene next reveal"><div class="kicker">End of Day 04</div><h2>Build the knowledge boundary.<br><span class="accent">Then trust the workflow.</span></h2><p>Generative models create possibilities. Reliable applications retrieve evidence, validate citations, and make uncertainty visible.</p><a href="./demo/">Open demo guide →</a><a href="./01-generative-ai.html">Return to Chapter 01 →</a></section>
+    <section class="scene next reveal"><div class="kicker">End of Day 04</div><h2>Build the knowledge boundary.<br><span class="accent">Then trust the workflow.</span></h2><p>Generative models create possibilities. Reliable applications retrieve evidence, validate citations, and make uncertainty visible.</p><a href="./demo/">Open demo guide →</a><a href="./06-project-setup.html">Take the project home →</a></section>
   </main>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -154,7 +154,8 @@ python3 policy_assistant_demo.py
         <li>Structured output and tool authority</li>
         <li>Project setup and code walkthrough</li>
         <li>Audience lab and shared evaluation set</li>
-        <li><a href="./05-llm-integration.html">Open Chapter 05 →</a></li>`;
+        <li><a href="./05-llm-integration.html">Open Chapter 05 →</a></li>
+        <li><a href="./06-project-setup.html">Project setup →</a></li>`;
     })();
   </script>
 </body>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Project setup · Full Stack & AI</title>
+  <style>
+    :root{--ink:#292721;--paper:#fffaf0;--coral:#ef7355;--sun:#ffdc77;--mint:#c8ece2;--lilac:#e4d8f7;--pink:#ffe1d8;--purple:#7d64c2}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background-color:var(--paper);background-image:radial-gradient(rgba(92,74,46,.17) 1.1px,transparent 1.1px);background-size:23px 23px;font-family:"Avenir Next",Avenir,sans-serif}main{width:min(1140px,calc(100% - 52px));margin:auto}.scene{min-height:92vh;padding:90px 0 65px;display:grid;align-content:center;gap:28px;border-bottom:2px solid rgba(41,39,33,.15)}.kicker{font:700 1.08rem/1 "Bradley Hand","Comic Sans MS",cursive;letter-spacing:.08em;color:var(--purple);text-transform:uppercase;margin-bottom:8px}h1,h2,h3{font-family:"Bradley Hand","Comic Sans MS",cursive;letter-spacing:-.04em}h1{font-size:clamp(4.3rem,9vw,8rem);line-height:.8;margin:0}h2{font-size:clamp(2.6rem,5.2vw,5rem);line-height:.9;margin:0}.accent{color:var(--coral)}p{font-size:clamp(1.2rem,1.8vw,1.65rem);line-height:1.3;margin:0;max-width:850px}.steps{display:grid;gap:14px;max-width:940px}.step{padding:18px 21px;border:2.5px solid var(--ink);background:#fffdf6;box-shadow:5px 6px 0 rgba(41,39,33,.12)}.step:nth-child(2){background:var(--mint)}.step:nth-child(3){background:var(--lilac)}.step:nth-child(4){background:var(--pink)}h3{font-size:clamp(1.55rem,2.4vw,2.15rem);margin:0 0 9px}pre{margin:0;overflow:auto;padding:13px;border:1.5px solid var(--ink);background:rgba(255,255,255,.8);font:600 clamp(.84rem,1.2vw,1rem)/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}.note{padding:17px 20px;border-left:7px solid var(--coral);background:#fff0bc;font-size:clamp(1.05rem,1.55vw,1.35rem);line-height:1.25}.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:4px}.button{display:inline-block;padding:16px 21px;border:2.5px solid var(--ink);box-shadow:5px 6px 0 var(--ink);background:var(--sun);color:var(--ink);text-decoration:none;font:700 clamp(1.2rem,2vw,1.65rem)/1 "Bradley Hand","Comic Sans MS",cursive}.button.alt{background:#fffdf6}.toc-toggle{position:fixed;z-index:3;top:24px;right:28px;padding:11px 15px;border:2.5px solid var(--ink);background:var(--sun);box-shadow:4px 5px 0 rgba(41,39,33,.22);cursor:pointer;font:700 clamp(1.05rem,1.65vw,1.38rem)/1 "Bradley Hand","Comic Sans MS",cursive}.toc{width:min(470px,100vw);height:100vh;max-height:none;margin:0 0 0 auto;padding:26px 24px;border:0;border-left:2.5px solid var(--ink);background:var(--paper);color:var(--ink);overflow:auto}.toc::backdrop{background:rgba(41,39,33,.26)}.toc-top{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:17px}.toc-top h2{font-size:3.4rem}.toc-close{width:42px;height:42px;border:2.5px solid var(--ink);background:#fffdf6;color:var(--coral);cursor:pointer;font:700 2rem/.8 "Bradley Hand","Comic Sans MS",cursive}.toc a{display:block;margin-top:12px;padding:12px;border:2px solid var(--ink);background:#fffdf6;color:var(--ink);font:700 1.2rem/1.1 "Bradley Hand","Comic Sans MS",cursive;text-decoration:none}.toc a:nth-of-type(2n){background:var(--mint)}.toc a:nth-of-type(3n){background:var(--lilac)}@media(max-width:720px){main{width:min(100% - 32px,1140px)}.scene{min-height:auto;padding:72px 0}.toc-toggle{top:15px;right:17px}}
+  </style>
+</head>
+<body>
+  <button class="toc-toggle" type="button" aria-haspopup="dialog" aria-controls="course-contents">☷ Contents</button>
+  <dialog class="toc" id="course-contents" aria-label="Course table of contents">
+    <div class="toc-top"><h2>Contents</h2><button class="toc-close" type="button" aria-label="Close contents">×</button></div>
+    <a href="./01-generative-ai.html">01 · Generative AI</a>
+    <a href="./02-large-language-models.html">02 · Large Language Models</a>
+    <a href="./03-prompt-engineering.html">03 · Prompt Engineering</a>
+    <a href="./04-hands-on-with-llms.html">04 · Hands-on with LLMs</a>
+    <a href="./05-llm-integration.html">05 · LLM Integration</a>
+    <a href="./06-project-setup.html">Project setup</a>
+  </dialog>
+  <main>
+    <section class="scene">
+      <div class="kicker">Course material</div>
+      <h1>Take the project<br><span class="accent">home.</span></h1>
+      <p>Clone the repository, add your Groq key locally, and run the course pages or the LLM integration demo.</p>
+      <div class="steps">
+        <div class="step"><h3>1. Clone</h3><pre>git clone https://github.com/gksoriginals/lbs-full-stack-ai.git
+cd lbs-full-stack-ai</pre></div>
+        <div class="step"><h3>2. Create a Groq API key</h3><p style="font-size:1rem;margin:0 0 10px">Open <a href="https://console.groq.com/keys">Groq Console → API Keys</a>, create a key, then choose an available chat model from the <a href="https://console.groq.com/docs/models">Groq model list</a>.</p></div>
+        <div class="step"><h3>3. Add your Groq key and model</h3><pre>GROQ_API_KEY=gsk_your_key_here
+GROQ_MODEL=openai/gpt-oss-20b</pre><p style="font-size:1rem;margin-top:10px">Save these two lines in a file named <b>.env</b> at the project root. It is ignored by Git.</p></div>
+        <div class="step"><h3>4. Run the course pages</h3><pre>python3 -m http.server 8765 --directory docs</pre><p style="font-size:1rem;margin-top:10px">Open <b>http://127.0.0.1:8765</b> in a browser.</p></div>
+        <div class="step"><h3>5. Run the LLM demo</h3><pre>python3 -m pip install openai python-dotenv
+cd docs/demo
+python3 policy_assistant_demo.py</pre><p style="font-size:1rem;margin-top:10px">Open <b>http://127.0.0.1:8080</b>.</p></div>
+      </div>
+      <div class="note"><b>Keep your key private.</b> Do not commit or share the root <b>.env</b> file.</div>
+      <div class="actions"><a class="button" href="https://github.com/gksoriginals/lbs-full-stack-ai">Open repository ↗</a><a class="button alt" href="./05-llm-integration.html">Back to LLM Integration ←</a></div>
+    </section>
+  </main>
+  <script>
+    const panel=document.querySelector('#course-contents');
+    document.querySelector('.toc-toggle').addEventListener('click',()=>panel.showModal());
+    document.querySelector('.toc-close').addEventListener('click',()=>panel.close());
+    panel.addEventListener('click',event=>{if(event.target===panel)panel.close()});
+  </script>
+</body>
+</html>
