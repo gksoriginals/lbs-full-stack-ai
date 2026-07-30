@@ -5,7 +5,7 @@ College webpages. The code retrieves relevant chunks before a Groq model call,
 then verifies that every cited source ID came from those retrieved chunks.
 
     python3 -m pip install openai python-dotenv
-    # Add GROQ_API_KEY to docs/demo/.env
+    # Add GROQ_API_KEY to the project-root .env
     python3 policy_assistant_demo.py
 """
 
@@ -25,8 +25,8 @@ from openai import APIError, OpenAI
 HOST = "127.0.0.1"
 PORT = 8080
 HERE = Path(__file__).parent
-# Load local credentials before reading configuration. The .env file is ignored by Git.
-load_dotenv(HERE / ".env")
+# Load project-local credentials before reading configuration. The .env file is ignored by Git.
+load_dotenv(HERE.parent.parent / ".env")
 MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 KNOWLEDGE_BASE = json.loads((HERE / "lbs_knowledge_base.json").read_text())
 
